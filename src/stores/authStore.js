@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx';
 import { hashHistory } from 'react-router';
 import agent from '../agent';
-import profileStore from './profileStore';
+import userStore from './userStore';
 
 const updateToken = (token) => {
   window.localStorage.setItem('jwt', token);
@@ -41,10 +41,13 @@ class AuthStore {
     this.errors = undefined;
     return agent.Auth.login(this.values.email, this.values.password)
       .then(({ user }) => updateToken(user.token))
-      .then(() => profileStore.pullUser())
+      .then(() => userStore.pullUser())
       .then(() => {hashHistory.replace('/')})
-      .catch((err) => { this.errors = err.response.body.errors; })
-      .finally(() => { this.inProgress = false; });
+      .catch(action((err) => {
+        this.errors = err.response && err.response.body && err.response.body.errors;
+        throw err;
+      }))
+      .finally(action(() => { this.inProgress = false; }));
   }
 
   @action register() {
@@ -52,15 +55,18 @@ class AuthStore {
     this.errors = undefined;
     return agent.Auth.register(this.values.username, this.values.email, this.values.password)
       .then(({ user }) => updateToken(user.token))
-      .then(() => profileStore.pullUser())
+      .then(() => userStore.pullUser())
       .then(() => hashHistory.replace('/'))
-      .catch((err) => { this.errors = err.response.body.errors; })
-      .finally(() => { this.inProgress = false; });
+      .catch(action((err) => {
+        this.errors = err.response && err.response.body && err.response.body.errors;
+        throw err;
+      }))
+      .finally(action(() => { this.inProgress = false; }));
   }
 
   @action logout() {
     updateToken(null);
-    profileStore.deleteUser();
+    userStore.forgetUser();
     hashHistory.replace('/');
   }
 }

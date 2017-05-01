@@ -1,18 +1,10 @@
 import { Link } from 'react-router';
 import React from 'react';
-import agent from '../../agent';
-import { connect } from 'react-redux';
-
-const mapDispatchToProps = dispatch => ({
-  onClickDelete: payload =>
-    dispatch({ type: 'DELETE_ARTICLE', payload })
-});
 
 const ArticleActions = props => {
   const article = props.article;
-  const del = () => {
-    props.onClickDelete(agent.Articles.del(article.slug))
-  };
+  const handleDelete = () => props.onDelete(article.slug);
+
   if (props.canModify) {
     return (
       <span>
@@ -23,7 +15,7 @@ const ArticleActions = props => {
           <i className="ion-edit"></i> Edit Article
         </Link>
 
-        <button className="btn btn-outline-danger btn-sm" onClick={del}>
+        <button className="btn btn-outline-danger btn-sm" onClick={handleDelete}>
           <i className="ion-trash-a"></i> Delete Article
         </button>
 
@@ -37,4 +29,4 @@ const ArticleActions = props => {
   );
 };
 
-export default connect(() => ({}), mapDispatchToProps)(ArticleActions);
+export default ArticleActions;

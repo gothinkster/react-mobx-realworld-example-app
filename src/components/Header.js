@@ -39,7 +39,7 @@ const LoggedInView = props => {
       <ul className="nav navbar-nav pull-xs-right">
 
         <li className="nav-item">
-          <Link to="" className="nav-link">
+          <Link to="/" className="nav-link">
             Home
           </Link>
         </li>
@@ -72,7 +72,7 @@ const LoggedInView = props => {
   return null;
 };
 
-@inject('profileStore', 'commonStore')
+@inject('userStore', 'commonStore')
 @observer
 class Header extends React.Component {
   render() {
@@ -84,9 +84,9 @@ class Header extends React.Component {
             {this.props.commonStore.appName.toLowerCase()}
           </Link>
 
-          <LoggedOutView currentUser={this.props.profileStore.currentUser} />
+          <LoggedOutView currentUser={this.props.userStore.currentUser} />
 
-          <LoggedInView currentUser={this.props.profileStore.currentUser} />
+          <LoggedInView currentUser={this.props.userStore.currentUser} />
         </div>
       </nav>
     );

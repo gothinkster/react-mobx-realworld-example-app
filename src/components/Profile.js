@@ -2,9 +2,8 @@
 
 import ArticleList from './ArticleList';
 import React from 'react';
-import { Link } from 'react-router';
-import agent from '../agent';
-import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router';
+import { inject, observer } from 'mobx-react';
 
 const EditProfileSettings = props => {
   if (props.isUser) {
@@ -25,7 +24,7 @@ const FollowUserButton = props => {
   }
 
   let classes = 'btn btn-sm action-btn';
-  if (props.user.following) {
+  if (props.following) {
     classes += ' btn-secondary';
   } else {
     classes += ' btn-outline-secondary';
@@ -33,10 +32,10 @@ const FollowUserButton = props => {
 
   const handleClick = ev => {
     ev.preventDefault();
-    if (props.user.following) {
-      props.unfollow(props.user.username)
+    if (props.following) {
+      props.unfollow(props.username)
     } else {
-      props.follow(props.user.username)
+      props.follow(props.username)
     }
   };
 
@@ -46,49 +45,59 @@ const FollowUserButton = props => {
       onClick={handleClick}>
       <i className="ion-plus-round"></i>
       &nbsp;
-      {props.user.following ? 'Unfollow' : 'Follow'} {props.user.username}
+      {props.following ? 'Unfollow' : 'Follow'} {props.username}
     </button>
   );
 };
 
-const mapStateToProps = state => ({
-  ...state.articleList,
-  currentUser: state.common.currentUser,
-  profile: state.profile
-});
 
-const mapDispatchToProps = dispatch => ({
-  onFollow: username => dispatch({
-    type: 'FOLLOW_USER',
-    payload: agent.Profile.follow(username)
-  }),
-  onLoad: payload => dispatch({ type: 'PROFILE_PAGE_LOADED', payload }),
-  onUnfollow: username => dispatch({
-    type: 'UNFOLLOW_USER',
-    payload: agent.Profile.unfollow(username)
-  }),
-  onUnload: () => dispatch({ type: 'PROFILE_PAGE_UNLOADED' })
-});
-
-class Profile extends React.Component {
+@inject('articlesStore', 'profileStore', 'userStore')
+@withRouter
+@observer
+export default class Profile extends React.Component {
   componentWillMount() {
-    this.props.onLoad(Promise.all([
-      agent.Profile.get(this.props.params.username),
-      agent.Articles.byAuthor(this.props.params.username)
-    ]));
+    this.props.profileStore.loadProfile(this.props.params.username);
+    this.props.profileStore.articlesStore.setPredicate(this.getPredicate());
+    this.props.profileStore.articlesStore.loadArticles();
   }
 
-  componentWillUnmount() {
-    this.props.onUnload();
+  componentDidUpdate(previousProps) {
+    if (this.props.location !== previousProps.location) {
+      this.props.profileStore.loadProfile(this.props.params.username);
+      this.props.profileStore.articlesStore.setPredicate(this.getPredicate());
+      this.props.profileStore.articlesStore.loadArticles();
+    }
   }
+
+  getTab() {
+    if (/\/favorites/.test(this.props.location.pathname)) return 'favorites';
+    return 'all'
+  }
+
+  getPredicate() {
+    switch (this.getTab()) {
+      case 'favorites': return { favoritedBy: this.props.params.username }
+      default: return { author: this.props.params.username }
+    }
+  }
+
+  handleFollow = () => this.props.profileStore.follow();
+  handleUnfollow = () => this.props.profileStore.unfollow();
+
+  handleSetPage = page => {
+    this.props.profileStore.articlesStore.setPage(page);
+    this.props.profileStore.articlesStore.loadArticles();
+  };
 
   renderTabs() {
+    const { profile } = this.props.profileStore;
     return (
       <ul className="nav nav-pills outline-active">
         <li className="nav-item">
           <Link
-            className="nav-link active"
-            to={`@${this.props.profile.username}`}>
+            className="nav-link"
+            activeClassName="active"
+            to={`@${profile.username}`}>
             My Articles
           </Link>
         </li>
@@ -96,7 +105,8 @@ class Profile extends React.Component {
         <li className="nav-item">
           <Link
             className="nav-link"
-            to={`@${this.props.profile.username}/favorites`}>
+            activeClassName="active"
+            to={`@${profile.username}/favorites`}>
             Favorited Articles
           </Link>
         </li>
@@ -105,13 +115,13 @@ class Profile extends React.Component {
   }
 
   render() {
-    const profile = this.props.profile;
-    if (!profile) {
-      return null;
-    }
+    const { profile, isLoadingProfile, articlesStore } = this.props.profileStore;
+    const { currentUser } = this.props.userStore;
 
-    const isUser = this.props.currentUser &&
-      this.props.profile.username === this.props.currentUser.username;
+    if (isLoadingProfile && !profile) return <div>Loading...</div>;
+    if (!profile) return <div>?</div>;
+
+    const isUser = currentUser && profile.username === currentUser.username;
 
     return (
       <div className="profile-page">
@@ -128,9 +138,10 @@ class Profile extends React.Component {
                 <EditProfileSettings isUser={isUser} />
                 <FollowUserButton
                   isUser={isUser}
-                  user={profile}
-                  follow={this.props.onFollow}
-                  unfollow={this.props.onUnfollow}
+                  username={profile.username}
+                  following={profile.following}
+                  follow={this.handleFollow}
+                  unfollow={this.handleUnfollow}
                   />
 
               </div>
@@ -148,9 +159,10 @@ class Profile extends React.Component {
               </div>
 
               <ArticleList
-                articles={this.props.articles}
-                articlesCount={this.props.articlesCount}
-                state={this.props.currentPage} />
+                articles={articlesStore.articles}
+                totalPagesCount={articlesStore.totalPagesCount}
+                onSetPage={this.handleSetPage}
+              />
             </div>
 
           </div>
@@ -161,5 +173,4 @@ class Profile extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
-export { Profile as Profile, mapStateToProps as mapStateToProps };
+export { Profile as Profile };

@@ -5,7 +5,7 @@ import ListPagination from './ListPagination';
 import React from 'react';
 
 const ArticleList = props => {
-  if (!props.articles) {
+  if (props.loading && props.articles.length === 0) {
     return (
       <div className="article-preview">Loading...</div>
     );
@@ -30,7 +30,8 @@ const ArticleList = props => {
       }
 
       <ListPagination
-        articlesCount={props.articlesCount}
+        onSetPage={props.onSetPage}
+        totalPagesCount={props.totalPagesCount}
         currentPage={props.currentPage} />
     </div>
   );

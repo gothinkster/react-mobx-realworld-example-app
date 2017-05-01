@@ -1,39 +1,16 @@
 import agent from '../agent';
 import Header from './Header';
 import React from 'react';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 
-import { Provider } from 'mobx-react';
-import articlesStore from '../stores/articlesStore';
-import authStore from '../stores/authStore';
-import commonStore from '../stores/commonStore';
-import editorStore from '../stores/editorStore';
-import profileStore from '../stores/profileStore';
+@inject('userStore', 'commonStore')
+@observer
+export default class App extends React.Component {
 
-const stores = {
-  articlesStore,
-  authStore,
-  commonStore,
-  editorStore,
-  profileStore,
-};
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  };
 
-// For easier debugging
-window._____APP_STATE_____ = stores;
-
-const mapStateToProps = state => ({
-  appLoaded: state.common.appLoaded,
-  redirectTo: state.common.redirectTo
-});
-
-const mapDispatchToProps = dispatch => ({
-  onLoad: (payload, token) =>
-    dispatch({ type: 'APP_LOAD', payload, token, skipTracking: true }),
-  onRedirect: () =>
-    dispatch({ type: 'REDIRECT' })
-});
-
-class App extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.redirectTo) {
       this.context.router.replace(nextProps.redirectTo);
@@ -45,38 +22,26 @@ class App extends React.Component {
     const token = window.localStorage.getItem('jwt');
     if (token) {
       agent.setToken(token);
-      profileStore.pullUser()
-        .finally(() => stores.commonStore.setAppLoaded());
+      this.props.userStore.pullUser()
+        .finally(() => this.props.commonStore.setAppLoaded());
     } else {
-      stores.commonStore.setAppLoaded();
+      this.props.commonStore.commonStore.setAppLoaded();
     }
-
-    this.props.onLoad(token ? agent.Auth.current() : null, token);
   }
 
   render() {
-    if (stores.commonStore.appLoaded) {
+    if (this.props.commonStore.appLoaded) {
       return (
-        <Provider {...stores}>
-          <div>
-            <Header
-              appName={this.props.appName}
-              currentUser={this.props.currentUser} />
-            {this.props.children}
-          </div>
-        </Provider>
+        <div>
+          <Header
+            appName={this.props.appName}
+            currentUser={this.props.currentUser} />
+          {this.props.children}
+        </div>
       );
     }
     return (
-      <Provider {...stores}>
-        <Header />
-      </Provider>
+      <Header />
     );
   }
 }
-
-App.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);

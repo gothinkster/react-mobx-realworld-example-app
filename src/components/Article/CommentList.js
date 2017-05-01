@@ -1,7 +1,8 @@
 import Comment from './Comment';
 import React from 'react';
+import { observer } from 'mobx-react';
 
-const CommentList = props => {
+const CommentList = observer(props => {
   return (
     <div>
       {
@@ -11,12 +12,14 @@ const CommentList = props => {
               comment={comment}
               currentUser={props.currentUser}
               slug={props.slug}
-              key={comment.id} />
+              key={comment.id}
+              onDelete={props.onDelete}
+            />
           );
         })
       }
     </div>
   );
-};
+});
 
 export default CommentList;

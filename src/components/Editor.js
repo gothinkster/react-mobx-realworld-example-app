@@ -3,7 +3,8 @@
 import ListErrors from './ListErrors';
 import React from 'react';
 import agent from '../agent';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
 
 const mapStateToProps = state => ({
   ...state.editor
@@ -24,75 +25,85 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: 'UPDATE_FIELD_EDITOR', key, value })
 });
 
-class Editor extends React.Component {
-  constructor() {
-    super();
 
-    const updateFieldEvent =
-      key => ev => this.props.onUpdateField(key, ev.target.value);
-    this.changeTitle = updateFieldEvent('title');
-    this.changeDescription = updateFieldEvent('description');
-    this.changeBody = updateFieldEvent('body');
-    this.changeTagInput = updateFieldEvent('tagInput');
+@inject('editorStore')
+@withRouter
+@observer
+export default class Editor extends React.Component {
 
-    this.watchForEnter = ev => {
-      if (ev.keyCode === 13) {
-        ev.preventDefault();
-        this.props.onAddTag();
-      }
-    };
+  state = {
+    tagInput: '',
+  };
 
-    this.removeTagHandler = tag => () => {
-      this.props.onRemoveTag(tag);
-    };
-
-    this.submitForm = ev => {
-      ev.preventDefault();
-      const article = {
-        title: this.props.title,
-        description: this.props.description,
-        body: this.props.body,
-        tagList: this.props.tagList
-      };
-
-      const slug = { slug: this.props.articleSlug };
-      const promise = this.props.articleSlug ?
-        agent.Articles.update(Object.assign(article, slug)) :
-        agent.Articles.create(article);
-
-      this.props.onSubmit(promise);
-    };
+  componentWillMount() {
+    this.props.editorStore.setArticleSlug(this.props.params.slug);
+    this.props.editorStore.loadInitialData();
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.params.slug !== nextProps.params.slug) {
-      if (nextProps.params.slug) {
-        this.props.onUnload();
-        return this.props.onLoad(agent.Articles.get(this.props.params.slug));
-      }
-      this.props.onLoad(null);
+      this.props.editorStore.setArticleSlug(this.props.params.slug);
+      this.props.editorStore.loadInitialData();
     }
   }
 
-  componentWillMount() {
-    if (this.props.params.slug) {
-      return this.props.onLoad(agent.Articles.get(this.props.params.slug));
-    }
-    this.props.onLoad(null);
-  }
+  changeTitle = e => this.props.editorStore.setTitle(e.target.value);
+  changeDescription = e => this.props.editorStore.setDescription(e.target.value);
+  changeBody = e => this.props.editorStore.setBody(e.target.value);
+  changeTagInput = e => this.setState({ tagInput: e.target.value });
 
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
+  handleTagInputKeyDown = ev => {
+    switch (ev.keyCode) {
+      case 13: // Enter
+      case 9: // Tab
+      case 188: // ,
+        if (ev.keyCode !== 9) ev.preventDefault();
+        this.handleAddTag();
+        break;
+      default:
+        break;
+    }
+  };
+
+  handleAddTag = () => {
+    if (this.state.tagInput) {
+      this.props.editorStore.addTag(this.state.tagInput.trim());
+      this.setState({ tagInput: '' });
+    }
+  };
+
+  handleRemoveTag = tag => {
+    if (this.props.editorStore.inProgress) return;
+    this.props.editorStore.removeTag(tag);
+  };
+
+  submitForm = ev => {
+    ev.preventDefault();
+    const { editorStore } = this.props;
+    editorStore.submit()
+      .then(article => {
+        editorStore.reset();
+        this.props.router.replace(`/article/${article.slug}`)
+      });
+  };
 
   render() {
+    const {
+      inProgress,
+      errors,
+      title,
+      description,
+      body,
+      tagList,
+    } = this.props.editorStore;
+
     return (
       <div className="editor-page">
         <div className="container page">
           <div className="row">
             <div className="col-md-10 offset-md-1 col-xs-12">
 
-              <ListErrors errors={this.props.errors}></ListErrors>
+              <ListErrors errors={errors} />
 
               <form>
                 <fieldset>
@@ -102,8 +113,10 @@ class Editor extends React.Component {
                       className="form-control form-control-lg"
                       type="text"
                       placeholder="Article Title"
-                      value={this.props.title}
-                      onChange={this.changeTitle} />
+                      value={title}
+                      onChange={this.changeTitle}
+                      disabled={inProgress}
+                    />
                   </fieldset>
 
                   <fieldset className="form-group">
@@ -111,8 +124,10 @@ class Editor extends React.Component {
                       className="form-control"
                       type="text"
                       placeholder="What's this article about?"
-                      value={this.props.description}
-                      onChange={this.changeDescription} />
+                      value={description}
+                      onChange={this.changeDescription}
+                      disabled={inProgress}
+                    />
                   </fieldset>
 
                   <fieldset className="form-group">
@@ -120,9 +135,10 @@ class Editor extends React.Component {
                       className="form-control"
                       rows="8"
                       placeholder="Write your article (in markdown)"
-                      value={this.props.body}
-                      onChange={this.changeBody}>
-                    </textarea>
+                      value={body}
+                      onChange={this.changeBody}
+                      disabled={inProgress}
+                    />
                   </fieldset>
 
                   <fieldset className="form-group">
@@ -130,17 +146,20 @@ class Editor extends React.Component {
                       className="form-control"
                       type="text"
                       placeholder="Enter tags"
-                      value={this.props.tagInput}
+                      value={this.state.tagInput}
                       onChange={this.changeTagInput}
-                      onKeyUp={this.watchForEnter} />
+                      onBlur={this.handleAddTag}
+                      onKeyDown={this.handleTagInputKeyDown}
+                      disabled={inProgress}
+                    />
 
                     <div className="tag-list">
                       {
-                        (this.props.tagList || []).map(tag => {
+                        tagList.map(tag => {
                           return (
                             <span className="tag-default tag-pill" key={tag}>
                               <i  className="ion-close-round"
-                                  onClick={this.removeTagHandler(tag)}>
+                                  onClick={() => this.handleRemoveTag(tag)}>
                               </i>
                               {tag}
                             </span>
@@ -153,7 +172,7 @@ class Editor extends React.Component {
                   <button
                     className="btn btn-lg pull-xs-right btn-primary"
                     type="button"
-                    disabled={this.props.inProgress}
+                    disabled={inProgress}
                     onClick={this.submitForm}>
                     Publish Article
                   </button>
@@ -168,5 +187,3 @@ class Editor extends React.Component {
     );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Editor);

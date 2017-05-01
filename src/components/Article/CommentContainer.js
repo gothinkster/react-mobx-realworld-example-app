@@ -15,7 +15,9 @@ const CommentContainer = props => {
         <CommentList
           comments={props.comments}
           slug={props.slug}
-          currentUser={props.currentUser} />
+          currentUser={props.currentUser}
+          onDelete={props.onDelete}
+        />
       </div>
     );
   } else {
@@ -31,7 +33,9 @@ const CommentContainer = props => {
         <CommentList
           comments={props.comments}
           slug={props.slug}
-          currentUser={props.currentUser} />
+          currentUser={props.currentUser}
+          onDelete={props.onDelete}
+        />
       </div>
     );
   }

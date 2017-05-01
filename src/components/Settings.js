@@ -2,7 +2,7 @@ import ListErrors from './ListErrors';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-@inject('profileStore')
+@inject('userStore')
 @observer
 class SettingsForm extends React.Component {
   constructor() {
@@ -35,12 +35,12 @@ class SettingsForm extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.profileStore.currentUser) {
+    if (this.props.userStore.currentUser) {
       Object.assign(this.state, {
-        image: this.props.profileStore.currentUser.image || '',
-        username: this.props.profileStore.currentUser.username,
-        bio: this.props.profileStore.currentUser.bio || '',
-        email: this.props.profileStore.currentUser.email
+        image: this.props.userStore.currentUser.image || '',
+        username: this.props.userStore.currentUser.username,
+        bio: this.props.userStore.currentUser.bio || '',
+        email: this.props.userStore.currentUser.email
       });
     }
   }
@@ -99,7 +99,7 @@ class SettingsForm extends React.Component {
           <button
             className="btn btn-lg btn-primary pull-xs-right"
             type="submit"
-            disabled={this.props.profileStore.updatingUser}>
+            disabled={this.props.userStore.updatingUser}>
             Update Settings
           </button>
 
@@ -109,7 +109,7 @@ class SettingsForm extends React.Component {
   }
 }
 
-@inject('profileStore', 'authStore')
+@inject('userStore', 'authStore')
 @observer
 class Settings extends React.Component {
 
@@ -124,11 +124,11 @@ class Settings extends React.Component {
 
               <h1 className="text-xs-center">Your Settings</h1>
 
-              <ListErrors errors={this.props.profileStore.updatingUserErrors} />
+              <ListErrors errors={this.props.userStore.updatingUserErrors} />
 
               <SettingsForm
-                currentUser={this.props.profileStore.currentUser}
-                onSubmitForm={user => this.props.profileStore.updateUser(user)} />
+                currentUser={this.props.userStore.currentUser}
+                onSubmitForm={user => this.props.userStore.updateUser(user)} />
 
               <hr />
 

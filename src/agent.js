@@ -45,13 +45,27 @@ const Tags = {
 
 const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 const omitSlug = article => Object.assign({}, article, { slug: undefined })
+const urlencode = (data) => {
+  if (typeof data === 'object') {
+    return Object.keys(data)
+      .map((k, i, data) => {
+        if (data[k] === undefined) return undefined;
+        return encode(k) + '=' + encode(data[k]);
+      })
+      .filter(cc => cc !== undefined)
+      .join('&');
+  }
+  if (data === undefined) return '';
+  return encode(data);
+};
+
 const Articles = {
-  all: page =>
-    requests.get(`/articles?${limit(10, page)}`),
-  byAuthor: (author, page) =>
+  all: (page, lim = 10) =>
+    requests.get(`/articles?${limit(lim, page)}`),
+  byAuthor: (author, page, query) =>
     requests.get(`/articles?author=${encode(author)}&${limit(5, page)}`),
-  byTag: (tag, page) =>
-    requests.get(`/articles?tag=${encode(tag)}&${limit(10, page)}`),
+  byTag: (tag, page, lim = 10) =>
+    requests.get(`/articles?tag=${encode(tag)}&${limit(lim, page)}`),
   del: slug =>
     requests.del(`/articles/${slug}`),
   favorite: slug =>
