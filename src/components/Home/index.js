@@ -38,7 +38,8 @@ export default class Home extends React.Component {
 
                 <Tags
                   tags={tags}
-                  onClickTag={this.handleTagClick} />
+                  onClickTag={this.handleTagClick}
+                />
 
               </div>
             </div>

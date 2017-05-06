@@ -1,4 +1,4 @@
-import { observable, action, reaction } from 'mobx';
+import { observable, action } from 'mobx';
 import agent from '../agent';
 
 const LIMIT = 10;
@@ -32,13 +32,6 @@ export class ArticlesStore {
     this.predicate = predicate;
   }
 
-  @action updatePredicate(predicate) {
-    const newPredicate = Object.assign({}, this.predicate, predicate);
-    if (JSON.stringify(newPredicate) === JSON.stringify(this.predicate)) return;
-    this.clear();
-    this.predicate = newPredicate;
-  }
-
   $req() {
     if (this.predicate.myFeed) return agent.Articles.feed(this.page, LIMIT);
     if (this.predicate.favoritedBy) return agent.Articles.favoritedBy(this.predicate.favoritedBy, this.page, LIMIT);
@@ -53,7 +46,7 @@ export class ArticlesStore {
       .then(action(({ articles, articlesCount }) => {
         this.articles = articles;
         this.articlesRegistry.clear();
-        articles.forEach(article => this.articlesRegistry.set(article.slug, article));
+        this.articles.forEach(article => this.articlesRegistry.set(article.slug, article));
         this.totalPagesCount = Math.ceil(articlesCount / LIMIT);
       }))
       .finally(action(() => { this.isLoading = false; }));
@@ -74,7 +67,7 @@ export class ArticlesStore {
   }
 
   @action makeFavorite(slug) {
-    const article = this.articles.find(a => a.slug === slug);
+    const article = this.getArticle(slug);
     if (article && !article.favorited) {
       article.favorited = true;
       article.favoritesCount++;
@@ -89,7 +82,7 @@ export class ArticlesStore {
   }
 
   @action unmakeFavorite(slug) {
-    const article = this.articles.find(a => a.slug === slug);
+    const article = this.getArticle(slug);
     if (article && article.favorited) {
       article.favorited = false;
       article.favoritesCount--;
@@ -104,15 +97,15 @@ export class ArticlesStore {
   }
 
   @action createArticle(article) {
-    agent.Articles.create(article)
+    return agent.Articles.create(article)
       .then(({ article }) => {
         this.articlesRegistry.set(article.slug, article);
         return article;
       })
   }
 
-  @action updateArticle(article) {
-    agent.Articles.update(data)
+  @action updateArticle(data) {
+    return agent.Articles.update(data)
       .then(({ article }) => {
         this.articles = this.articles.map(a => a.slug === article.slug ? article : a);
         this.articlesRegistry.set(article.slug, article);

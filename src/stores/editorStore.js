@@ -1,5 +1,4 @@
 import { observable, action } from 'mobx';
-import agent from '../agent';
 import articlesStore from './articlesStore';
 
 class EditorStore {

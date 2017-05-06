@@ -8,7 +8,7 @@ const ArticleMeta = observer(props => {
   return (
     <div className="article-meta">
       <Link to={`@${article.author.username}`}>
-        <img src={article.author.image} />
+        <img src={article.author.image} role="presentation" />
       </Link>
 
       <div className="info">

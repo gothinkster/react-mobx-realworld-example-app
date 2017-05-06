@@ -1,31 +1,54 @@
-'use strict';
-
 import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
+import commonStore from './stores/commonStore';
+import authStore from './stores/authStore';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
 const API_ROOT = 'https://conduit.productionready.io/api';
 
 const encode = encodeURIComponent;
+
+const handleErrors = err => {
+  if (err && err.response && err.response.status === 401) {
+    authStore.logout();
+  }
+  return err;
+};
+
 const responseBody = res => res.body;
 
-let token = null;
 const tokenPlugin = req => {
-  if (token) {
-    req.set('authorization', `Token ${token}`);
+  if (commonStore.token) {
+    req.set('authorization', `Token ${commonStore.token}`);
   }
 };
 
 const requests = {
   del: url =>
-    superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent
+      .del(`${API_ROOT}${url}`)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
   get: url =>
-    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent
+      .get(`${API_ROOT}${url}`)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
   put: (url, body) =>
-    superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody),
+    superagent
+      .put(`${API_ROOT}${url}`, body)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
   post: (url, body) =>
-    superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody)
+    superagent
+      .post(`${API_ROOT}${url}`, body)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
 };
 
 const Auth = {
@@ -45,19 +68,6 @@ const Tags = {
 
 const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 const omitSlug = article => Object.assign({}, article, { slug: undefined })
-const urlencode = (data) => {
-  if (typeof data === 'object') {
-    return Object.keys(data)
-      .map((k, i, data) => {
-        if (data[k] === undefined) return undefined;
-        return encode(k) + '=' + encode(data[k]);
-      })
-      .filter(cc => cc !== undefined)
-      .join('&');
-  }
-  if (data === undefined) return '';
-  return encode(data);
-};
 
 const Articles = {
   all: (page, lim = 10) =>
@@ -108,5 +118,4 @@ export default {
   Comments,
   Profile,
   Tags,
-  setToken: _token => { token = _token; }
 };

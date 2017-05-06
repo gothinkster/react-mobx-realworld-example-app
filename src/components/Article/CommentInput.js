@@ -1,6 +1,5 @@
 import React from 'react';
-import agent from '../../agent';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 
 @inject('commentsStore')
 export default class CommentInput extends React.Component {
@@ -31,16 +30,19 @@ export default class CommentInput extends React.Component {
             value={this.state.body}
             disabled={isCreatingComment}
             onChange={this.handleBodyChange}
-            rows="3">
-          </textarea>
+            rows="3"
+          />
         </div>
         <div className="card-footer">
           <img
             src={this.props.currentUser.image}
-            className="comment-author-img" />
+            className="comment-author-img"
+            role="presentation"
+          />
           <button
             className="btn btn-sm btn-primary"
-            type="submit">
+            type="submit"
+          >
             Post Comment
           </button>
         </div>

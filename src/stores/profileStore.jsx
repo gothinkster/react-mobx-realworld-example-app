@@ -1,13 +1,10 @@
 import { observable, action } from 'mobx';
-import { ArticlesStore } from './articlesStore';
 import agent from '../agent';
 
 class ProfileStore {
 
   @observable profile = undefined;
   @observable isLoadingProfile = false;
-
-  articlesStore = new ArticlesStore();
 
   @action loadProfile(username) {
     this.isLoadingProfile = true;

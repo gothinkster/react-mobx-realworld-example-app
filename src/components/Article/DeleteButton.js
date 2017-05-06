@@ -1,5 +1,4 @@
 import React from 'react';
-import agent from '../../agent';
 
 const DeleteButton = props => {
   const handleClick = () => props.onDelete(props.commentId);

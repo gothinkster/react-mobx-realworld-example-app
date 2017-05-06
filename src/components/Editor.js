@@ -1,29 +1,7 @@
-'use strict';
-
 import ListErrors from './ListErrors';
 import React from 'react';
-import agent from '../agent';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-
-const mapStateToProps = state => ({
-  ...state.editor
-});
-
-const mapDispatchToProps = dispatch => ({
-  onAddTag: () =>
-    dispatch({ type: 'ADD_TAG' }),
-  onLoad: payload =>
-    dispatch({ type: 'EDITOR_PAGE_LOADED', payload }),
-  onRemoveTag: tag =>
-    dispatch({ type: 'REMOVE_TAG', tag }),
-  onSubmit: payload =>
-    dispatch({ type: 'ARTICLE_SUBMITTED', payload }),
-  onUnload: payload =>
-    dispatch({ type: 'EDITOR_PAGE_UNLOADED' }),
-  onUpdateField: (key, value) =>
-    dispatch({ type: 'UPDATE_FIELD_EDITOR', key, value })
-});
 
 
 @inject('editorStore')
@@ -158,9 +136,10 @@ export default class Editor extends React.Component {
                         tagList.map(tag => {
                           return (
                             <span className="tag-default tag-pill" key={tag}>
-                              <i  className="ion-close-round"
-                                  onClick={() => this.handleRemoveTag(tag)}>
-                              </i>
+                              <i
+                                className="ion-close-round"
+                                onClick={() => this.handleRemoveTag(tag)}
+                              />
                               {tag}
                             </span>
                           );
@@ -173,7 +152,8 @@ export default class Editor extends React.Component {
                     className="btn btn-lg pull-xs-right btn-primary"
                     type="button"
                     disabled={inProgress}
-                    onClick={this.submitForm}>
+                    onClick={this.submitForm}
+                  >
                     Publish Article
                   </button>
 

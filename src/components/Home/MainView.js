@@ -14,7 +14,8 @@ const YourFeedTab = props => {
       <li className="nav-item">
         <a  href=""
             className={ props.tab === 'feed' ? 'nav-link active' : 'nav-link' }
-            onClick={clickHandler}>
+            onClick={clickHandler}
+        >
           Your Feed
         </a>
       </li>
@@ -33,7 +34,8 @@ const GlobalFeedTab = props => {
       <a
         href=""
         className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
-        onClick={clickHandler}>
+        onClick={clickHandler}
+      >
         Global Feed
       </a>
     </li>
@@ -48,7 +50,7 @@ const TagFilterTab = props => {
   return (
     <li className="nav-item">
       <a href="" className="nav-link active">
-        <i className="ion-pound"></i> {props.tag}
+        <i className="ion-pound" /> {props.tag}
       </a>
     </li>
   );
@@ -105,7 +107,8 @@ export default class MainView extends React.Component {
             <YourFeedTab
               currentUser={currentUser}
               tab={this.getTab()}
-              onTabClick={this.handleTabChange} />
+              onTabClick={this.handleTabChange}
+            />
 
             <GlobalFeedTab
               tab={this.getTab()}

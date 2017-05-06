@@ -1,7 +1,7 @@
-'use strict';
-
 import ArticleList from './ArticleList';
 import React from 'react';
+import LoadingSpinner from './LoadingSpinner';
+import RedError from './RedError';
 import { Link, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 
@@ -11,7 +11,7 @@ const EditProfileSettings = props => {
       <Link
         to="settings"
         className="btn btn-sm btn-outline-secondary action-btn">
-        <i className="ion-gear-a"></i> Edit Profile Settings
+        <i className="ion-gear-a" /> Edit Profile Settings
       </Link>
     );
   }
@@ -42,8 +42,9 @@ const FollowUserButton = props => {
   return (
     <button
       className={classes}
-      onClick={handleClick}>
-      <i className="ion-plus-round"></i>
+      onClick={handleClick}
+    >
+      <i className="ion-plus-round" />
       &nbsp;
       {props.following ? 'Unfollow' : 'Follow'} {props.username}
     </button>
@@ -57,15 +58,15 @@ const FollowUserButton = props => {
 export default class Profile extends React.Component {
   componentWillMount() {
     this.props.profileStore.loadProfile(this.props.params.username);
-    this.props.profileStore.articlesStore.setPredicate(this.getPredicate());
-    this.props.profileStore.articlesStore.loadArticles();
+    this.props.articlesStore.setPredicate(this.getPredicate());
+    this.props.articlesStore.loadArticles();
   }
 
   componentDidUpdate(previousProps) {
     if (this.props.location !== previousProps.location) {
       this.props.profileStore.loadProfile(this.props.params.username);
-      this.props.profileStore.articlesStore.setPredicate(this.getPredicate());
-      this.props.profileStore.articlesStore.loadArticles();
+      this.props.articlesStore.setPredicate(this.getPredicate());
+      this.props.articlesStore.loadArticles();
     }
   }
 
@@ -81,12 +82,12 @@ export default class Profile extends React.Component {
     }
   }
 
-  handleFollow = () => this.props.profileStore.follow();
-  handleUnfollow = () => this.props.profileStore.unfollow();
+  handleFollow = () => this.props.follow();
+  handleUnfollow = () => this.props.unfollow();
 
   handleSetPage = page => {
-    this.props.profileStore.articlesStore.setPage(page);
-    this.props.profileStore.articlesStore.loadArticles();
+    this.props.articlesStore.setPage(page);
+    this.props.articlesStore.loadArticles();
   };
 
   renderTabs() {
@@ -97,7 +98,8 @@ export default class Profile extends React.Component {
           <Link
             className="nav-link"
             activeClassName="active"
-            to={`@${profile.username}`}>
+            to={`@${profile.username}`}
+          >
             My Articles
           </Link>
         </li>
@@ -106,7 +108,8 @@ export default class Profile extends React.Component {
           <Link
             className="nav-link"
             activeClassName="active"
-            to={`@${profile.username}/favorites`}>
+            to={`@${profile.username}/favorites`}
+          >
             Favorited Articles
           </Link>
         </li>
@@ -115,11 +118,12 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    const { profile, isLoadingProfile, articlesStore } = this.props.profileStore;
-    const { currentUser } = this.props.userStore;
+    const { profileStore, articlesStore, userStore } = this.props;
+    const { profile, isLoadingProfile } = profileStore;
+    const { currentUser } = userStore;
 
-    if (isLoadingProfile && !profile) return <div>Loading...</div>;
-    if (!profile) return <div>?</div>;
+    if (isLoadingProfile && !profile) return <LoadingSpinner />;
+    if (!profile) return <RedError message="Can't load profile" />;
 
     const isUser = currentUser && profile.username === currentUser.username;
 
@@ -131,7 +135,7 @@ export default class Profile extends React.Component {
             <div className="row">
               <div className="col-xs-12 col-md-10 offset-md-1">
 
-                <img src={profile.image} className="user-img" />
+                <img src={profile.image} className="user-img" role="presentation" />
                 <h4>{profile.username}</h4>
                 <p>{profile.bio}</p>
 
@@ -142,7 +146,7 @@ export default class Profile extends React.Component {
                   following={profile.following}
                   follow={this.handleFollow}
                   unfollow={this.handleUnfollow}
-                  />
+                />
 
               </div>
             </div>
@@ -162,6 +166,7 @@ export default class Profile extends React.Component {
                 articles={articlesStore.articles}
                 totalPagesCount={articlesStore.totalPagesCount}
                 onSetPage={this.handleSetPage}
+                loading={articlesStore.isLoading}
               />
             </div>
 
@@ -173,4 +178,4 @@ export default class Profile extends React.Component {
   }
 }
 
-export { Profile as Profile };
+export { Profile };

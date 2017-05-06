@@ -16,7 +16,7 @@ export default class Login extends React.Component {
   handleSubmitForm = (e) => {
     e.preventDefault();
     this.props.authStore.login();
-  }
+  };
 
   render() {
     const { values, errors, inProgress } = this.props.authStore;
@@ -45,7 +45,8 @@ export default class Login extends React.Component {
                       type="email"
                       placeholder="Email"
                       value={values.email}
-                      onChange={this.handleEmailChange} />
+                      onChange={this.handleEmailChange}
+                    />
                   </fieldset>
 
                   <fieldset className="form-group">
@@ -54,13 +55,15 @@ export default class Login extends React.Component {
                       type="password"
                       placeholder="Password"
                       value={values.password}
-                      onChange={this.handlePasswordChange} />
+                      onChange={this.handlePasswordChange}
+                    />
                   </fieldset>
 
                   <button
                     className="btn btn-lg btn-primary pull-xs-right"
                     type="submit"
-                    disabled={inProgress}>
+                    disabled={inProgress}
+                  >
                     Sign in
                   </button>
 

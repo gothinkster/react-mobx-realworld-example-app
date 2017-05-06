@@ -2,11 +2,7 @@ import { observable, action } from 'mobx';
 import { hashHistory } from 'react-router';
 import agent from '../agent';
 import userStore from './userStore';
-
-const updateToken = (token) => {
-  window.localStorage.setItem('jwt', token);
-  agent.setToken(token);
-};
+import commonStore from './commonStore';
 
 class AuthStore {
   @observable inProgress = false;
@@ -40,9 +36,9 @@ class AuthStore {
     this.inProgress = true;
     this.errors = undefined;
     return agent.Auth.login(this.values.email, this.values.password)
-      .then(({ user }) => updateToken(user.token))
+      .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      .then(() => {hashHistory.replace('/')})
+      .then(() => hashHistory.replace('/'))
       .catch(action((err) => {
         this.errors = err.response && err.response.body && err.response.body.errors;
         throw err;
@@ -54,7 +50,7 @@ class AuthStore {
     this.inProgress = true;
     this.errors = undefined;
     return agent.Auth.register(this.values.username, this.values.email, this.values.password)
-      .then(({ user }) => updateToken(user.token))
+      .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
       .then(() => hashHistory.replace('/'))
       .catch(action((err) => {
@@ -65,7 +61,7 @@ class AuthStore {
   }
 
   @action logout() {
-    updateToken(null);
+    commonStore.setToken(undefined);
     userStore.forgetUser();
     hashHistory.replace('/');
   }

@@ -1,5 +1,3 @@
-'use strict';
-
 import ReactDOM from 'react-dom';
 import promiseFinally from 'promise.prototype.finally';
 import React from 'react';
@@ -40,7 +38,6 @@ window._____APP_STATE_____ = stores;
 promiseFinally.shim();
 useStrict(true);
 
-console.log('render');
 ReactDOM.render((
   <Provider {...stores}>
     <Router history={hashHistory}>

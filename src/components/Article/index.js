@@ -1,10 +1,9 @@
-'use strict';
-
 import ArticleMeta from './ArticleMeta';
 import CommentContainer from './CommentContainer';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
+import RedError from '../RedError';
 import marked from 'marked';
 
 
@@ -34,7 +33,7 @@ export default class Article extends React.Component {
     const { comments, commentErrors } = this.props.commentsStore;
     const article = this.props.articlesStore.getArticle(slug);
 
-    if (!article) return null;
+    if (!article) return <RedError message="Can't load article" />;
 
     const markup = { __html: marked(article.body, { sanitize: true }) };
     const canModify = currentUser && currentUser.username === article.author.username;
@@ -58,7 +57,7 @@ export default class Article extends React.Component {
           <div className="row article-content">
             <div className="col-xs-12">
 
-              <div dangerouslySetInnerHTML={markup}></div>
+              <div dangerouslySetInnerHTML={markup} />
 
               <ul className="tag-list">
                 {
@@ -66,7 +65,8 @@ export default class Article extends React.Component {
                     return (
                       <li
                         className="tag-default tag-pill tag-outline"
-                        key={tag}>
+                        key={tag}
+                      >
                         {tag}
                       </li>
                     );
@@ -79,8 +79,7 @@ export default class Article extends React.Component {
 
           <hr />
 
-          <div className="article-actions">
-          </div>
+          <div className="article-actions" />
 
           <div className="row">
             <CommentContainer

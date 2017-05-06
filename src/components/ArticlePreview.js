@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { Link } from 'react-router';
 import { inject, observer } from 'mobx-react';
@@ -21,7 +19,6 @@ export default class ArticlePreview extends React.Component {
       articlesStore.makeFavorite(article.slug);
     }
   };
-  
 
   render() {
     const { article } = this.props;
@@ -31,7 +28,7 @@ export default class ArticlePreview extends React.Component {
       <div className="article-preview">
         <div className="article-meta">
           <Link to={`@${article.author.username}`}>
-            <img src={article.author.image} />
+            <img src={article.author.image} role="presentation" />
           </Link>
 
           <div className="info">
@@ -45,7 +42,7 @@ export default class ArticlePreview extends React.Component {
 
           <div className="pull-xs-right">
             <button className={favoriteButtonClass} onClick={this.handleClickFavorite}>
-              <i className="ion-heart"></i> {article.favoritesCount}
+              <i className="ion-heart" /> {article.favoritesCount}
             </button>
           </div>
         </div>

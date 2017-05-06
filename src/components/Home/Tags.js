@@ -1,5 +1,5 @@
 import React from 'react';
-import agent from '../../agent';
+import LoadingSpinner from '../LoadingSpinner';
 
 const Tags = props => {
   const tags = props.tags;
@@ -18,7 +18,8 @@ const Tags = props => {
                 href=""
                 className="tag-default tag-pill"
                 key={tag}
-                onClick={handleClick}>
+                onClick={handleClick}
+              >
                 {tag}
               </a>
             );
@@ -28,7 +29,7 @@ const Tags = props => {
     );
   } else {
     return (
-      <div>Loading Tags...</div>
+      <LoadingSpinner />
     );
   }
 };

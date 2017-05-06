@@ -1,13 +1,12 @@
-'use strict';
-
 import ArticlePreview from './ArticlePreview';
 import ListPagination from './ListPagination';
+import LoadingSpinner from './LoadingSpinner';
 import React from 'react';
 
 const ArticleList = props => {
   if (props.loading && props.articles.length === 0) {
     return (
-      <div className="article-preview">Loading...</div>
+      <LoadingSpinner />
     );
   }
 
@@ -32,7 +31,8 @@ const ArticleList = props => {
       <ListPagination
         onSetPage={props.onSetPage}
         totalPagesCount={props.totalPagesCount}
-        currentPage={props.currentPage} />
+        currentPage={props.currentPage}
+      />
     </div>
   );
 };

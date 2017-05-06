@@ -1,7 +1,5 @@
-import { observable, action, reaction } from 'mobx';
+import { observable, action } from 'mobx';
 import agent from '../agent';
-
-const LIMIT = 10;
 
 export class CommentsStore {
 

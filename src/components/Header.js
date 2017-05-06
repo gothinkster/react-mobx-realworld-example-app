@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { Link } from 'react-router';
 import { inject, observer } from 'mobx-react';
@@ -46,21 +44,22 @@ const LoggedInView = props => {
 
         <li className="nav-item">
           <Link to="editor" className="nav-link">
-            <i className="ion-compose"></i>&nbsp;New Post
+            <i className="ion-compose" />&nbsp;New Post
           </Link>
         </li>
 
         <li className="nav-item">
           <Link to="settings" className="nav-link">
-            <i className="ion-gear-a"></i>&nbsp;Settings
+            <i className="ion-gear-a" />&nbsp;Settings
           </Link>
         </li>
 
         <li className="nav-item">
           <Link
             to={`@${props.currentUser.username}`}
-            className="nav-link">
-            <img src={props.currentUser.image} className="user-pic" />
+            className="nav-link"
+          >
+            <img src={props.currentUser.image} className="user-pic" role="presentation" />
             {props.currentUser.username}
           </Link>
         </li>

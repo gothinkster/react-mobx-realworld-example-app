@@ -56,7 +56,8 @@ class SettingsForm extends React.Component {
               type="text"
               placeholder="URL of profile picture"
               value={this.state.image}
-              onChange={this.updateState('image')} />
+              onChange={this.updateState('image')}
+            />
           </fieldset>
 
           <fieldset className="form-group">
@@ -65,7 +66,8 @@ class SettingsForm extends React.Component {
               type="text"
               placeholder="Username"
               value={this.state.username}
-              onChange={this.updateState('username')} />
+              onChange={this.updateState('username')}
+            />
           </fieldset>
 
           <fieldset className="form-group">
@@ -74,7 +76,8 @@ class SettingsForm extends React.Component {
               rows="8"
               placeholder="Short bio about you"
               value={this.state.bio}
-              onChange={this.updateState('bio')}>
+              onChange={this.updateState('bio')}
+            >
             </textarea>
           </fieldset>
 
@@ -84,7 +87,8 @@ class SettingsForm extends React.Component {
               type="email"
               placeholder="Email"
               value={this.state.email}
-              onChange={this.updateState('email')} />
+              onChange={this.updateState('email')}
+            />
           </fieldset>
 
           <fieldset className="form-group">
@@ -93,13 +97,15 @@ class SettingsForm extends React.Component {
               type="password"
               placeholder="New Password"
               value={this.state.password}
-              onChange={this.updateState('password')} />
+              onChange={this.updateState('password')}
+            />
           </fieldset>
 
           <button
             className="btn btn-lg btn-primary pull-xs-right"
             type="submit"
-            disabled={this.props.userStore.updatingUser}>
+            disabled={this.props.userStore.updatingUser}
+          >
             Update Settings
           </button>
 
@@ -134,7 +140,8 @@ class Settings extends React.Component {
 
               <button
                 className="btn btn-outline-danger"
-                onClick={this.handleClickLogout}>
+                onClick={this.handleClickLogout}
+              >
                 Or click here to logout.
               </button>
 

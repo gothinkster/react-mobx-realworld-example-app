@@ -25,7 +25,8 @@ const ListPagination = props => {
               <li
                 className={ isCurrent ? 'page-item active' : 'page-item' }
                 onClick={onClick}
-                key={v.toString()}>
+                key={v.toString()}
+              >
 
                 <a className="page-link" href="">{v + 1}</a>
 
