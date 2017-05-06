@@ -8,14 +8,16 @@ const CommentContainer = props => {
     return (
       <div className="col-xs-12 col-md-8 offset-md-2">
         <div>
-          <list-errors errors={props.errors}></list-errors>
+          <list-errors errors={props.errors} />
           <CommentInput slug={props.slug} currentUser={props.currentUser} />
         </div>
 
         <CommentList
           comments={props.comments}
           slug={props.slug}
-          currentUser={props.currentUser} />
+          currentUser={props.currentUser}
+          onDelete={props.onDelete}
+        />
       </div>
     );
   } else {
@@ -31,7 +33,9 @@ const CommentContainer = props => {
         <CommentList
           comments={props.comments}
           slug={props.slug}
-          currentUser={props.currentUser} />
+          currentUser={props.currentUser}
+          onDelete={props.onDelete}
+        />
       </div>
     );
   }

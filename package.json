@@ -1,22 +1,20 @@
 {
-  "name": "react-redux-realworld-example-app",
+  "name": "react-mobx-realworld-example-app",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
     "custom-react-scripts": "0.0.23"
   },
   "dependencies": {
-    "history": "^4.3.0",
+    "history": "4.6.1",
     "marked": "^0.3.6",
     "mobx": "^3.1.9",
     "mobx-react": "^4.1.8",
     "promise.prototype.finally": "^2.0.1",
+    "prop-types": "^15.5.8",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-redux": "^4.4.5",
-    "react-router": "^2.8.1",
-    "redux": "^3.6.0",
-    "redux-logger": "^2.7.4",
+    "react-router": "3.0.5",
     "superagent": "^2.3.0",
     "superagent-promise": "^1.1.0"
   },

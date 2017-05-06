@@ -1,20 +1,21 @@
 import ArticleList from '../ArticleList';
 import React from 'react';
-import agent from '../../agent';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router'
 
 const YourFeedTab = props => {
-  if (props.token) {
+  if (props.currentUser) {
     const clickHandler = ev => {
       ev.preventDefault();
-      props.onTabClick('feed', agent.Articles.feed());
+      props.onTabClick('feed');
     }
 
     return (
       <li className="nav-item">
         <a  href=""
             className={ props.tab === 'feed' ? 'nav-link active' : 'nav-link' }
-            onClick={clickHandler}>
+            onClick={clickHandler}
+        >
           Your Feed
         </a>
       </li>
@@ -26,14 +27,15 @@ const YourFeedTab = props => {
 const GlobalFeedTab = props => {
   const clickHandler = ev => {
     ev.preventDefault();
-    props.onTabClick('all', agent.Articles.all());
+    props.onTabClick('all');
   };
   return (
     <li className="nav-item">
       <a
         href=""
         className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
-        onClick={clickHandler}>
+        onClick={clickHandler}
+      >
         Global Feed
       </a>
     </li>
@@ -48,47 +50,84 @@ const TagFilterTab = props => {
   return (
     <li className="nav-item">
       <a href="" className="nav-link active">
-        <i className="ion-pound"></i> {props.tag}
+        <i className="ion-pound" /> {props.tag}
       </a>
     </li>
   );
 };
 
-const mapStateToProps = state => ({
-  ...state.articleList,
-  tags: state.home.tags,
-  token: state.common.token
-});
+@inject('articlesStore', 'commonStore', 'userStore')
+@withRouter
+@observer
+export default class MainView extends React.Component {
 
-const mapDispatchToProps = dispatch => ({
-  onTabClick: (tab, payload) => dispatch({ type: 'CHANGE_TAB', tab, payload })
-});
+  componentWillMount() {
+    this.props.articlesStore.setPredicate(this.getPredicate());
+    this.props.articlesStore.loadArticles();
+  }
 
-const MainView = props => {
-  return (
-    <div className="col-md-9">
-      <div className="feed-toggle">
-        <ul className="nav nav-pills outline-active">
+  componentDidUpdate(previousProps) {
+    if (this.props.location !== previousProps.location) {
+      this.props.articlesStore.setPredicate(this.getPredicate());
+      this.props.articlesStore.loadArticles();
+    }
+  }
 
-          <YourFeedTab
-            token={props.token}
-            tab={props.tab}
-            onTabClick={props.onTabClick} />
+  getTab() {
+    return this.props.location.query.tab || 'all';
+  }
 
-          <GlobalFeedTab tab={props.tab} onTabClick={props.onTabClick} />
+  getPredicate() {
+    switch (this.getTab()) {
+      case 'feed': return { myFeed: true };
+      case 'tag': return { tag: this.props.location.query.tag };
+      default: return {};
+    }
+  }
 
-          <TagFilterTab tag={props.tag} />
+  handleTabChange = (tab) => {
+    if (this.props.location.query.tab === tab) return;
+    this.props.router.push({ ...this.props.location, query: { tab } })
+  };
 
-        </ul>
+  handleSetPage = page => {
+    this.props.articlesStore.setPage(page);
+    this.props.articlesStore.loadArticles();
+  };
+
+  render() {
+    const { currentUser } = this.props.userStore;
+    const { articles, isLoading, page, totalPagesCount } = this.props.articlesStore;
+
+    return (
+      <div className="col-md-9">
+        <div className="feed-toggle">
+          <ul className="nav nav-pills outline-active">
+
+            <YourFeedTab
+              currentUser={currentUser}
+              tab={this.getTab()}
+              onTabClick={this.handleTabChange}
+            />
+
+            <GlobalFeedTab
+              tab={this.getTab()}
+              onTabClick={this.handleTabChange}
+            />
+
+            <TagFilterTab tag={this.props.location.query.tag} />
+
+          </ul>
+        </div>
+
+        <ArticleList
+          articles={articles}
+          loading={isLoading}
+          totalPagesCount={totalPagesCount}
+          currentPage={page}
+          onSetPage={this.handleSetPage}
+        />
       </div>
-
-      <ArticleList
-        articles={props.articles}
-        loading={props.loading}
-        articlesCount={props.articlesCount}
-        currentPage={props.currentPage} />
-    </div>
-  );
+    );
+  }
 };
-
-export default connect(mapStateToProps, mapDispatchToProps)(MainView);

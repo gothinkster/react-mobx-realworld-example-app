@@ -1,13 +1,14 @@
 import ArticleActions from './ArticleActions';
 import { Link } from 'react-router';
 import React from 'react';
+import { observer } from 'mobx-react';
 
-const ArticleMeta = props => {
+const ArticleMeta = observer(props => {
   const article = props.article;
   return (
     <div className="article-meta">
       <Link to={`@${article.author.username}`}>
-        <img src={article.author.image} />
+        <img src={article.author.image} role="presentation" />
       </Link>
 
       <div className="info">
@@ -19,9 +20,9 @@ const ArticleMeta = props => {
         </span>
       </div>
 
-      <ArticleActions canModify={props.canModify} article={article} />
+      <ArticleActions canModify={props.canModify} article={article} onDelete={props.onDelete} />
     </div>
   );
-};
+});
 
 export default ArticleMeta;

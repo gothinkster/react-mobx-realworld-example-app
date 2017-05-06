@@ -1,56 +1,54 @@
-'use strict';
-
 import ArticleMeta from './ArticleMeta';
 import CommentContainer from './CommentContainer';
-import { Link } from 'react-router';
 import React from 'react';
-import agent from '../../agent';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
+import RedError from '../RedError';
 import marked from 'marked';
 
-const mapStateToProps = state => ({
-  ...state.article,
-  currentUser: state.common.currentUser
-});
 
-const mapDispatchToProps = dispatch => ({
-  onLoad: payload =>
-    dispatch({ type: 'ARTICLE_PAGE_LOADED', payload }),
-  onUnload: () =>
-    dispatch({ type: 'ARTICLE_PAGE_UNLOADED' })
-});
-
-class Article extends React.Component {
+@inject('articlesStore', 'userStore', 'commentsStore')
+@withRouter
+@observer
+export default class Article extends React.Component {
   componentWillMount() {
-    this.props.onLoad(Promise.all([
-      agent.Articles.get(this.props.params.id),
-      agent.Comments.forArticle(this.props.params.id)
-    ]));
+    const slug = this.props.params.id;
+    this.props.articlesStore.loadArticle(slug, { acceptCached: true });
+    this.props.commentsStore.setArticleSlug(slug);
+    this.props.commentsStore.loadComments();
   }
 
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
+  handleDeleteArticle = slug => {
+    this.props.articlesStore.deleteArticle(slug)
+      .then(() => this.props.router.replace('/'));
+  };
+
+  handleDeleteComment = id => {
+    this.props.commentsStore.deleteComment(id);
+  };
 
   render() {
-    if (!this.props.article) {
-      return null;
-    }
+    const slug = this.props.params.id;
+    const { currentUser } = this.props.userStore;
+    const { comments, commentErrors } = this.props.commentsStore;
+    const article = this.props.articlesStore.getArticle(slug);
 
-    const markup = { __html: marked(this.props.article.body, { sanitize: true }) };
-    const canModify = this.props.currentUser &&
-      this.props.currentUser.username === this.props.article.author.username;
+    if (!article) return <RedError message="Can't load article" />;
+
+    const markup = { __html: marked(article.body, { sanitize: true }) };
+    const canModify = currentUser && currentUser.username === article.author.username;
     return (
       <div className="article-page">
 
         <div className="banner">
           <div className="container">
 
-            <h1>{this.props.article.title}</h1>
+            <h1>{article.title}</h1>
             <ArticleMeta
-              article={this.props.article}
-              canModify={canModify} />
-
+              article={article}
+              canModify={canModify}
+              onDelete={this.handleDeleteArticle}
+            />
           </div>
         </div>
 
@@ -59,15 +57,16 @@ class Article extends React.Component {
           <div className="row article-content">
             <div className="col-xs-12">
 
-              <div dangerouslySetInnerHTML={markup}></div>
+              <div dangerouslySetInnerHTML={markup} />
 
               <ul className="tag-list">
                 {
-                  this.props.article.tagList.map(tag => {
+                  article.tagList.map(tag => {
                     return (
                       <li
                         className="tag-default tag-pill tag-outline"
-                        key={tag}>
+                        key={tag}
+                      >
                         {tag}
                       </li>
                     );
@@ -80,20 +79,19 @@ class Article extends React.Component {
 
           <hr />
 
-          <div className="article-actions">
-          </div>
+          <div className="article-actions" />
 
           <div className="row">
             <CommentContainer
-              comments={this.props.comments || []}
-              errors={this.props.commentErrors}
-              slug={this.props.params.id}
-              currentUser={this.props.currentUser} />
+              comments={comments}
+              errors={commentErrors}
+              slug={slug}
+              currentUser={currentUser}
+              onDelete={this.handleDeleteComment}
+            />
           </div>
         </div>
       </div>
     );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Article);

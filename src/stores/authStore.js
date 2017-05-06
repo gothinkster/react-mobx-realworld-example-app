@@ -1,12 +1,8 @@
 import { observable, action } from 'mobx';
 import { hashHistory } from 'react-router';
 import agent from '../agent';
-import profileStore from './profileStore';
-
-const updateToken = (token) => {
-  window.localStorage.setItem('jwt', token);
-  agent.setToken(token);
-};
+import userStore from './userStore';
+import commonStore from './commonStore';
 
 class AuthStore {
   @observable inProgress = false;
@@ -40,27 +36,33 @@ class AuthStore {
     this.inProgress = true;
     this.errors = undefined;
     return agent.Auth.login(this.values.email, this.values.password)
-      .then(({ user }) => updateToken(user.token))
-      .then(() => profileStore.pullUser())
-      .then(() => {hashHistory.replace('/')})
-      .catch((err) => { this.errors = err.response.body.errors; })
-      .finally(() => { this.inProgress = false; });
+      .then(({ user }) => commonStore.setToken(user.token))
+      .then(() => userStore.pullUser())
+      .then(() => hashHistory.replace('/'))
+      .catch(action((err) => {
+        this.errors = err.response && err.response.body && err.response.body.errors;
+        throw err;
+      }))
+      .finally(action(() => { this.inProgress = false; }));
   }
 
   @action register() {
     this.inProgress = true;
     this.errors = undefined;
     return agent.Auth.register(this.values.username, this.values.email, this.values.password)
-      .then(({ user }) => updateToken(user.token))
-      .then(() => profileStore.pullUser())
+      .then(({ user }) => commonStore.setToken(user.token))
+      .then(() => userStore.pullUser())
       .then(() => hashHistory.replace('/'))
-      .catch((err) => { this.errors = err.response.body.errors; })
-      .finally(() => { this.inProgress = false; });
+      .catch(action((err) => {
+        this.errors = err.response && err.response.body && err.response.body.errors;
+        throw err;
+      }))
+      .finally(action(() => { this.inProgress = false; }));
   }
 
   @action logout() {
-    updateToken(null);
-    profileStore.deleteUser();
+    commonStore.setToken(undefined);
+    userStore.forgetUser();
     hashHistory.replace('/');
   }
 }

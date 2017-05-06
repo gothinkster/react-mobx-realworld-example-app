@@ -14,19 +14,26 @@ const Comment = props => {
       <div className="card-footer">
         <Link
           to={`@${comment.author.username}`}
-          className="comment-author">
-          <img src={comment.author.image} className="comment-author-img" />
+          className="comment-author"
+        >
+          <img src={comment.author.image} className="comment-author-img" role="presentation" />
         </Link>
         &nbsp;
         <Link
           to={`@${comment.author.username}`}
-          className="comment-author">
+          className="comment-author"
+        >
           {comment.author.username}
         </Link>
         <span className="date-posted">
           {new Date(comment.createdAt).toDateString()}
         </span>
-        <DeleteButton show={show} slug={props.slug} commentId={comment.id} />
+        <DeleteButton
+          show={show}
+          slug={props.slug}
+          commentId={comment.id}
+          onDelete={props.onDelete}
+        />
       </div>
     </div>
   );

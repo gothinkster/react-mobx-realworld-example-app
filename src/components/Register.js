@@ -56,7 +56,8 @@ export default class Register extends React.Component {
                       type="text"
                       placeholder="Username"
                       value={values.username}
-                      onChange={this.handleUsernameChange} />
+                      onChange={this.handleUsernameChange}
+                    />
                   </fieldset>
 
                   <fieldset className="form-group">
@@ -65,7 +66,8 @@ export default class Register extends React.Component {
                       type="email"
                       placeholder="Email"
                       value={values.email}
-                      onChange={this.handleEmailChange} />
+                      onChange={this.handleEmailChange}
+                    />
                   </fieldset>
 
                   <fieldset className="form-group">
@@ -74,13 +76,15 @@ export default class Register extends React.Component {
                       type="password"
                       placeholder="Password"
                       value={values.password}
-                      onChange={this.handlePasswordChange} />
+                      onChange={this.handlePasswordChange}
+                    />
                   </fieldset>
 
                   <button
                     className="btn btn-lg btn-primary pull-xs-right"
                     type="submit"
-                    disabled={inProgress}>
+                    disabled={inProgress}
+                  >
                     Sign in
                   </button>
 

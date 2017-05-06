@@ -2,45 +2,30 @@ import Banner from './Banner';
 import MainView from './MainView';
 import React from 'react';
 import Tags from './Tags';
-import agent from '../../agent';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router';
 
-const Promise = global.Promise;
-
-const mapStateToProps = state => ({
-  ...state.home,
-  appName: state.common.appName,
-  token: state.common.token
-});
-
-const mapDispatchToProps = dispatch => ({
-  onClickTag: (tag, payload) =>
-    dispatch({ type: 'APPLY_TAG_FILTER', tag, payload }),
-  onLoad: (tab, payload) =>
-    dispatch({ type: 'HOME_PAGE_LOADED', tab, payload }),
-  onUnload: () =>
-    dispatch({  type: 'HOME_PAGE_UNLOADED' })
-});
-
-class Home extends React.Component {
+@inject('commonStore')
+@withRouter
+@observer
+export default class Home extends React.Component {
   componentWillMount() {
-    const tab = this.props.token ? 'feed' : 'all';
-    const articlesPromise = this.props.token ?
-      agent.Articles.feed() :
-      agent.Articles.all();
-
-    this.props.onLoad(tab, Promise.all([agent.Tags.getAll(), articlesPromise]));
+    this.props.commonStore.loadTags();
   }
 
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
+  handleTagClick = tag => {
+    const { location } = this.props;
+    if (location.query.tab !== 'tag' || location.query.tag !== tag) {
+      this.props.router.push({ location, query: { tab: 'tag', tag } });
+    }
+  };
 
   render() {
+    const { tags, token, appName } = this.props.commonStore;
     return (
       <div className="home-page">
 
-        <Banner token={this.props.token} appName={this.props.appName} />
+        <Banner token={token} appName={appName} />
 
         <div className="container page">
           <div className="row">
@@ -52,8 +37,9 @@ class Home extends React.Component {
                 <p>Popular Tags</p>
 
                 <Tags
-                  tags={this.props.tags}
-                  onClickTag={this.props.onClickTag} />
+                  tags={tags}
+                  onClickTag={this.handleTagClick}
+                />
 
               </div>
             </div>
@@ -64,5 +50,3 @@ class Home extends React.Component {
     );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);

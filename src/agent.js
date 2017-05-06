@@ -1,31 +1,54 @@
-'use strict';
-
 import superagentPromise from 'superagent-promise';
 import _superagent from 'superagent';
+import commonStore from './stores/commonStore';
+import authStore from './stores/authStore';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
 const API_ROOT = 'https://conduit.productionready.io/api';
 
 const encode = encodeURIComponent;
+
+const handleErrors = err => {
+  if (err && err.response && err.response.status === 401) {
+    authStore.logout();
+  }
+  return err;
+};
+
 const responseBody = res => res.body;
 
-let token = null;
 const tokenPlugin = req => {
-  if (token) {
-    req.set('authorization', `Token ${token}`);
+  if (commonStore.token) {
+    req.set('authorization', `Token ${commonStore.token}`);
   }
 };
 
 const requests = {
   del: url =>
-    superagent.del(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent
+      .del(`${API_ROOT}${url}`)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
   get: url =>
-    superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
+    superagent
+      .get(`${API_ROOT}${url}`)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
   put: (url, body) =>
-    superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody),
+    superagent
+      .put(`${API_ROOT}${url}`, body)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
   post: (url, body) =>
-    superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody)
+    superagent
+      .post(`${API_ROOT}${url}`, body)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
 };
 
 const Auth = {
@@ -45,13 +68,14 @@ const Tags = {
 
 const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 const omitSlug = article => Object.assign({}, article, { slug: undefined })
+
 const Articles = {
-  all: page =>
-    requests.get(`/articles?${limit(10, page)}`),
-  byAuthor: (author, page) =>
+  all: (page, lim = 10) =>
+    requests.get(`/articles?${limit(lim, page)}`),
+  byAuthor: (author, page, query) =>
     requests.get(`/articles?author=${encode(author)}&${limit(5, page)}`),
-  byTag: (tag, page) =>
-    requests.get(`/articles?tag=${encode(tag)}&${limit(10, page)}`),
+  byTag: (tag, page, lim = 10) =>
+    requests.get(`/articles?tag=${encode(tag)}&${limit(lim, page)}`),
   del: slug =>
     requests.del(`/articles/${slug}`),
   favorite: slug =>
@@ -94,5 +118,4 @@ export default {
   Comments,
   Profile,
   Tags,
-  setToken: _token => { token = _token; }
 };

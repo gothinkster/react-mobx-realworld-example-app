@@ -2,7 +2,7 @@ import ListErrors from './ListErrors';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-@inject('profileStore')
+@inject('userStore')
 @observer
 class SettingsForm extends React.Component {
   constructor() {
@@ -35,12 +35,12 @@ class SettingsForm extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.profileStore.currentUser) {
+    if (this.props.userStore.currentUser) {
       Object.assign(this.state, {
-        image: this.props.profileStore.currentUser.image || '',
-        username: this.props.profileStore.currentUser.username,
-        bio: this.props.profileStore.currentUser.bio || '',
-        email: this.props.profileStore.currentUser.email
+        image: this.props.userStore.currentUser.image || '',
+        username: this.props.userStore.currentUser.username,
+        bio: this.props.userStore.currentUser.bio || '',
+        email: this.props.userStore.currentUser.email
       });
     }
   }
@@ -56,7 +56,8 @@ class SettingsForm extends React.Component {
               type="text"
               placeholder="URL of profile picture"
               value={this.state.image}
-              onChange={this.updateState('image')} />
+              onChange={this.updateState('image')}
+            />
           </fieldset>
 
           <fieldset className="form-group">
@@ -65,7 +66,8 @@ class SettingsForm extends React.Component {
               type="text"
               placeholder="Username"
               value={this.state.username}
-              onChange={this.updateState('username')} />
+              onChange={this.updateState('username')}
+            />
           </fieldset>
 
           <fieldset className="form-group">
@@ -74,7 +76,8 @@ class SettingsForm extends React.Component {
               rows="8"
               placeholder="Short bio about you"
               value={this.state.bio}
-              onChange={this.updateState('bio')}>
+              onChange={this.updateState('bio')}
+            >
             </textarea>
           </fieldset>
 
@@ -84,7 +87,8 @@ class SettingsForm extends React.Component {
               type="email"
               placeholder="Email"
               value={this.state.email}
-              onChange={this.updateState('email')} />
+              onChange={this.updateState('email')}
+            />
           </fieldset>
 
           <fieldset className="form-group">
@@ -93,13 +97,15 @@ class SettingsForm extends React.Component {
               type="password"
               placeholder="New Password"
               value={this.state.password}
-              onChange={this.updateState('password')} />
+              onChange={this.updateState('password')}
+            />
           </fieldset>
 
           <button
             className="btn btn-lg btn-primary pull-xs-right"
             type="submit"
-            disabled={this.props.profileStore.updatingUser}>
+            disabled={this.props.userStore.updatingUser}
+          >
             Update Settings
           </button>
 
@@ -109,7 +115,7 @@ class SettingsForm extends React.Component {
   }
 }
 
-@inject('profileStore', 'authStore')
+@inject('userStore', 'authStore')
 @observer
 class Settings extends React.Component {
 
@@ -124,17 +130,18 @@ class Settings extends React.Component {
 
               <h1 className="text-xs-center">Your Settings</h1>
 
-              <ListErrors errors={this.props.profileStore.updatingUserErrors} />
+              <ListErrors errors={this.props.userStore.updatingUserErrors} />
 
               <SettingsForm
-                currentUser={this.props.profileStore.currentUser}
-                onSubmitForm={user => this.props.profileStore.updateUser(user)} />
+                currentUser={this.props.userStore.currentUser}
+                onSubmitForm={user => this.props.userStore.updateUser(user)} />
 
               <hr />
 
               <button
                 className="btn btn-outline-danger"
-                onClick={this.handleClickLogout}>
+                onClick={this.handleClickLogout}
+              >
                 Or click here to logout.
               </button>
 
