@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import agent from '../agent';
 
 const LIMIT = 10;
@@ -8,12 +8,14 @@ export class ArticlesStore {
   @observable isLoading = false;
   @observable page = 0;
   @observable totalPagesCount = 0;
-  @observable articles = [];
   @observable articlesRegistry = observable.map();
   @observable predicate = {};
 
+  @computed get articles() {
+    return this.articlesRegistry.values();
+  };
+
   clear() {
-    this.articles = [];
     this.articlesRegistry.clear();
     this.page = 0;
   }
@@ -44,9 +46,8 @@ export class ArticlesStore {
     this.isLoading = true;
     return this.$req()
       .then(action(({ articles, articlesCount }) => {
-        this.articles = articles;
         this.articlesRegistry.clear();
-        this.articles.forEach(article => this.articlesRegistry.set(article.slug, article));
+        articles.forEach(article => this.articlesRegistry.set(article.slug, article));
         this.totalPagesCount = Math.ceil(articlesCount / LIMIT);
       }))
       .finally(action(() => { this.isLoading = false; }));
