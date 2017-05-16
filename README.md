@@ -31,7 +31,7 @@ If you want to change the API URL to a local server, simply edit `src/agent.js` 
 
 ## Functionality overview
 
-The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication. You can view a live demo over at https://Mobx.productionready.io/
+The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication. You can view a live demo over at https://react-mobx.realworld.io
 
 **General functionality:**
 
