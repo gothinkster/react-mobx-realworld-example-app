@@ -2,7 +2,7 @@
 
 > ### React + Mobx codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) spec and API.
 
-### [Demo](https://react-mobx.realworld.io)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
+### [Demo](https://gothinkster.github.io/react-mobx-realworld-example-app)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
 
 Originally created for this [GH issue](https://github.com/reactjs/Redux/issues/1353). The codebase is now feature complete; please submit bug fixes via pull requests & feedback via issues.
 
@@ -11,7 +11,7 @@ We're currently working on some docs for the codebase (explaining where function
 
 ## Getting started
 
-You can view a live demo over at https://react-mobx.realworld.io/
+You can view a live demo over at https://gothinkster.github.io/react-mobx-realworld-example-app
 
 To get the frontend running locally:
 
@@ -31,7 +31,7 @@ If you want to change the API URL to a local server, simply edit `src/agent.js` 
 
 ## Functionality overview
 
-The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication. You can view a live demo over at https://react-mobx.realworld.io
+The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication. You can view a live demo over at https://gothinkster.github.io/react-mobx-realworld-example-app
 
 **General functionality:**
 
