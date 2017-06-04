@@ -67,20 +67,20 @@ export default class MainView extends React.Component {
   }
 
   componentDidUpdate(previousProps) {
-    if (this.props.location !== previousProps.location) {
+    if (this.getTab(this.props) !== this.getTab(previousProps)) {
       this.props.articlesStore.setPredicate(this.getPredicate());
       this.props.articlesStore.loadArticles();
     }
   }
 
-  getTab() {
-    return this.props.location.query.tab || 'all';
+  getTab(props = this.props) {
+    return props.location.query.tab || 'all';
   }
 
-  getPredicate() {
-    switch (this.getTab()) {
+  getPredicate(props = this.props) {
+    switch (this.getTab(props)) {
       case 'feed': return { myFeed: true };
-      case 'tag': return { tag: this.props.location.query.tag };
+      case 'tag': return { tag: props.location.query.tag };
       default: return {};
     }
   }
