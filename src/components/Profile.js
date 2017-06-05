@@ -82,8 +82,8 @@ export default class Profile extends React.Component {
     }
   }
 
-  handleFollow = () => this.props.follow();
-  handleUnfollow = () => this.props.unfollow();
+  handleFollow = () => this.props.profileStore.follow();
+  handleUnfollow = () => this.props.profileStore.unfollow();
 
   handleSetPage = page => {
     this.props.articlesStore.setPage(page);

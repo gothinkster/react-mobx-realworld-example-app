@@ -108,15 +108,12 @@ export class ArticlesStore {
   @action updateArticle(data) {
     return agent.Articles.update(data)
       .then(({ article }) => {
-        this.articles = this.articles.map(a => a.slug === article.slug ? article : a);
         this.articlesRegistry.set(article.slug, article);
         return article;
       })
   }
 
   @action deleteArticle(slug) {
-    const idx = this.articles.findIndex(c => c.slug === slug);
-    if (idx > -1) this.articles.splice(idx, 1);
     this.articlesRegistry.delete(slug);
     return agent.Articles.del(slug)
       .catch(action(err => { this.loadArticles(); throw err; }));
