@@ -2,7 +2,7 @@
   "name": "react-mobx-realworld-example-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://gothinkster.github.io/react-mobx-realworld-example-app",
+  "homepage": "https://react-mobx.realworld.io",
   "devDependencies": {
     "custom-react-scripts": "0.0.23",
     "gh-pages": "^1.0.0"
