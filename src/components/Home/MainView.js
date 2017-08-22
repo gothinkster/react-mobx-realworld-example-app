@@ -67,12 +67,19 @@ export default class MainView extends React.Component {
   }
 
   componentDidUpdate(previousProps) {
-    if (this.getTab(this.props) !== this.getTab(previousProps)) {
+    if (
+      this.getTab(this.props) !== this.getTab(previousProps) || 
+      this.getTag(this.props) !== this.getTag(previousProps)
+    ) {
       this.props.articlesStore.setPredicate(this.getPredicate());
       this.props.articlesStore.loadArticles();
     }
   }
 
+  getTag(props = this.props) {
+    return props.location.query.tag || "";
+  }
+  
   getTab(props = this.props) {
     return props.location.query.tab || 'all';
   }
