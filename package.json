@@ -4,20 +4,21 @@
   "private": true,
   "homepage": "https://react-mobx.realworld.io",
   "devDependencies": {
-    "custom-react-scripts": "0.0.23",
+    "custom-react-scripts": "0.2.0",
     "gh-pages": "^1.0.0"
   },
   "dependencies": {
-    "history": "4.6.1",
+    "history": "4.6.3",
     "marked": "^0.3.6",
-    "mobx": "^3.1.9",
-    "mobx-react": "^4.1.8",
-    "promise.prototype.finally": "^2.0.1",
-    "prop-types": "^15.5.8",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
-    "react-router": "3.0.5",
-    "superagent": "^2.3.0",
+    "mobx": "^3.2.2",
+    "mobx-react": "^4.2.2",
+    "promise.prototype.finally": "^3.0.0",
+    "prop-types": "^15.5.10",
+    "query-string": "5.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-router-dom": "4.1.2",
+    "superagent": "^3.6.0",
     "superagent-promise": "^1.1.0"
   },
   "scripts": {

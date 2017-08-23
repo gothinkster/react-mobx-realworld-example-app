@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { hashHistory } from 'react-router';
+//import { Redirect } from 'react-router-dom';
 import agent from '../agent';
 import userStore from './userStore';
 import commonStore from './commonStore';
@@ -38,7 +38,7 @@ class AuthStore {
     return agent.Auth.login(this.values.email, this.values.password)
       .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      .then(() => hashHistory.replace('/'))
+      //.then(() => hashHistory.replace('/'))
       .catch(action((err) => {
         this.errors = err.response && err.response.body && err.response.body.errors;
         throw err;
@@ -52,7 +52,7 @@ class AuthStore {
     return agent.Auth.register(this.values.username, this.values.email, this.values.password)
       .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      .then(() => hashHistory.replace('/'))
+      //.then(() => hashHistory.replace('/'))
       .catch(action((err) => {
         this.errors = err.response && err.response.body && err.response.body.errors;
         throw err;
@@ -63,7 +63,7 @@ class AuthStore {
   @action logout() {
     commonStore.setToken(undefined);
     userStore.forgetUser();
-    hashHistory.replace('/');
+    //hashHistory.replace('/');
   }
 }
 

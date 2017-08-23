@@ -1,18 +1,11 @@
 import ReactDOM from 'react-dom';
 import promiseFinally from 'promise.prototype.finally';
 import React from 'react';
-import { Router, Route, IndexRoute, hashHistory } from 'react-router';
+import { HashRouter } from 'react-router-dom';
 import { useStrict } from 'mobx';
 import { Provider } from 'mobx-react';
 
 import App from './components/App';
-import Article from './components/Article';
-import Editor from './components/Editor';
-import Home from './components/Home';
-import Login from './components/Login';
-import Profile from './components/Profile';
-import Register from './components/Register';
-import Settings from './components/Settings';
 
 import articlesStore from './stores/articlesStore';
 import commentsStore from './stores/commentsStore';
@@ -40,18 +33,8 @@ useStrict(true);
 
 ReactDOM.render((
   <Provider {...stores}>
-    <Router history={hashHistory}>
-      <Route path="/" component={App}>
-        <IndexRoute component={Home} />
-        <Route path="login" component={Login} />
-        <Route path="register" component={Register} />
-        <Route path="editor" component={Editor} />
-        <Route path="editor/:slug" component={Editor} />
-        <Route path="article/:id" component={Article} />
-        <Route path="settings" component={Settings} />
-        <Route path="@:username" component={Profile} />
-        <Route path="@:username/favorites" component={Profile} />
-      </Route>
-    </Router>
+    <HashRouter>
+      <App />
+    </HashRouter>
   </Provider>
 ), document.getElementById('root'));

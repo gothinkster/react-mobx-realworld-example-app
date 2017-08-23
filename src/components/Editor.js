@@ -1,7 +1,7 @@
 import ListErrors from './ListErrors';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 
 @inject('editorStore')
@@ -14,13 +14,13 @@ export default class Editor extends React.Component {
   };
 
   componentWillMount() {
-    this.props.editorStore.setArticleSlug(this.props.params.slug);
+    this.props.editorStore.setArticleSlug(this.props.match.params.slug);
     this.props.editorStore.loadInitialData();
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.params.slug !== nextProps.params.slug) {
-      this.props.editorStore.setArticleSlug(this.props.params.slug);
+    if (this.props.match.params.slug !== nextProps.params.slug) {
+      this.props.editorStore.setArticleSlug(this.props.match.params.slug);
       this.props.editorStore.loadInitialData();
     }
   }

@@ -1,23 +1,23 @@
 import ArticleList from '../ArticleList';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router'
+import { withRouter, Link } from 'react-router-dom'
+import { parse as qsParse } from 'query-string';
 
 const YourFeedTab = props => {
   if (props.currentUser) {
-    const clickHandler = ev => {
-      ev.preventDefault();
-      props.onTabClick('feed');
-    }
 
     return (
       <li className="nav-item">
-        <a  href=""
-            className={ props.tab === 'feed' ? 'nav-link active' : 'nav-link' }
-            onClick={clickHandler}
+      <Link
+            //className={ props.tab === 'feed' ? 'nav-link active' : 'nav-link' }
+            to={{
+              pathname: "/",
+              search: "?tab=feed"
+            }}
         >
           Your Feed
-        </a>
+        </Link>
       </li>
     );
   }
@@ -25,19 +25,17 @@ const YourFeedTab = props => {
 };
 
 const GlobalFeedTab = props => {
-  const clickHandler = ev => {
-    ev.preventDefault();
-    props.onTabClick('all');
-  };
   return (
     <li className="nav-item">
-      <a
-        href=""
-        className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
-        onClick={clickHandler}
+      <Link
+        //className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
+        to={{
+          pathname: "/",
+          search: "?tab=all"
+        }}
       >
         Global Feed
-      </a>
+      </Link>
     </li>
   );
 };
@@ -68,7 +66,7 @@ export default class MainView extends React.Component {
 
   componentDidUpdate(previousProps) {
     if (
-      this.getTab(this.props) !== this.getTab(previousProps) || 
+      this.getTab(this.props) !== this.getTab(previousProps) ||
       this.getTag(this.props) !== this.getTag(previousProps)
     ) {
       this.props.articlesStore.setPredicate(this.getPredicate());
@@ -77,17 +75,17 @@ export default class MainView extends React.Component {
   }
 
   getTag(props = this.props) {
-    return props.location.query.tag || "";
+    return qsParse(props.location.search).tag || "";
   }
-  
+
   getTab(props = this.props) {
-    return props.location.query.tab || 'all';
+    return qsParse(props.location.search).tab || 'all';
   }
 
   getPredicate(props = this.props) {
     switch (this.getTab(props)) {
       case 'feed': return { myFeed: true };
-      case 'tag': return { tag: props.location.query.tag };
+      case 'tag': return { tag: qsParse(props.location.search).tag };
       default: return {};
     }
   }
@@ -114,15 +112,13 @@ export default class MainView extends React.Component {
             <YourFeedTab
               currentUser={currentUser}
               tab={this.getTab()}
-              onTabClick={this.handleTabChange}
             />
 
             <GlobalFeedTab
               tab={this.getTab()}
-              onTabClick={this.handleTabChange}
             />
 
-            <TagFilterTab tag={this.props.location.query.tag} />
+            <TagFilterTab tag={qsParse(this.props.location.search).tag} />
 
           </ul>
         </div>

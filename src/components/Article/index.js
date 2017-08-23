@@ -2,7 +2,7 @@ import ArticleMeta from './ArticleMeta';
 import CommentContainer from './CommentContainer';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import RedError from '../RedError';
 import marked from 'marked';
 
@@ -12,7 +12,7 @@ import marked from 'marked';
 @observer
 export default class Article extends React.Component {
   componentWillMount() {
-    const slug = this.props.params.id;
+    const slug = this.props.match.params.id;
     this.props.articlesStore.loadArticle(slug, { acceptCached: true });
     this.props.commentsStore.setArticleSlug(slug);
     this.props.commentsStore.loadComments();
@@ -28,7 +28,7 @@ export default class Article extends React.Component {
   };
 
   render() {
-    const slug = this.props.params.id;
+    const slug = this.props.match.params.id;
     const { currentUser } = this.props.userStore;
     const { comments, commentErrors } = this.props.commentsStore;
     const article = this.props.articlesStore.getArticle(slug);

@@ -37,7 +37,7 @@ export default class CommentInput extends React.Component {
           <img
             src={this.props.currentUser.image}
             className="comment-author-img"
-            role="presentation"
+            alt=""
           />
           <button
             className="btn btn-sm btn-primary"

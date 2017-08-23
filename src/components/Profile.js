@@ -2,14 +2,14 @@ import ArticleList from './ArticleList';
 import React from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import RedError from './RedError';
-import { Link, withRouter } from 'react-router';
+import { NavLink, Link, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 const EditProfileSettings = props => {
   if (props.isUser) {
     return (
       <Link
-        to="settings"
+        to="/settings"
         className="btn btn-sm btn-outline-secondary action-btn">
         <i className="ion-gear-a" /> Edit Profile Settings
       </Link>
@@ -57,14 +57,14 @@ const FollowUserButton = props => {
 @observer
 export default class Profile extends React.Component {
   componentWillMount() {
-    this.props.profileStore.loadProfile(this.props.params.username);
+    this.props.profileStore.loadProfile(this.props.match.params.username);
     this.props.articlesStore.setPredicate(this.getPredicate());
     this.props.articlesStore.loadArticles();
   }
 
   componentDidUpdate(previousProps) {
     if (this.props.location !== previousProps.location) {
-      this.props.profileStore.loadProfile(this.props.params.username);
+      this.props.profileStore.loadProfile(this.props.match.params.username);
       this.props.articlesStore.setPredicate(this.getPredicate());
       this.props.articlesStore.loadArticles();
     }
@@ -77,8 +77,8 @@ export default class Profile extends React.Component {
 
   getPredicate() {
     switch (this.getTab()) {
-      case 'favorites': return { favoritedBy: this.props.params.username }
-      default: return { author: this.props.params.username }
+      case 'favorites': return { favoritedBy: this.props.match.params.username }
+      default: return { author: this.props.match.params.username }
     }
   }
 
@@ -95,23 +95,23 @@ export default class Profile extends React.Component {
     return (
       <ul className="nav nav-pills outline-active">
         <li className="nav-item">
-          <Link
+          <NavLink
             className="nav-link"
             activeClassName="active"
-            to={`@${profile.username}`}
+            to={`/@${profile.username}`}
           >
             My Articles
-          </Link>
+          </NavLink>
         </li>
 
         <li className="nav-item">
-          <Link
+          <NavLink
             className="nav-link"
             activeClassName="active"
-            to={`@${profile.username}/favorites`}
+            to={`/@${profile.username}/favorites`}
           >
             Favorited Articles
-          </Link>
+          </NavLink>
         </li>
       </ul>
     );
@@ -135,7 +135,7 @@ export default class Profile extends React.Component {
             <div className="row">
               <div className="col-xs-12 col-md-10 offset-md-1">
 
-                <img src={profile.image} className="user-img" role="presentation" />
+                <img src={profile.image} className="user-img" alt="" />
                 <h4>{profile.username}</h4>
                 <p>{profile.bio}</p>
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import LoadingSpinner from '../LoadingSpinner';
 
 const Tags = props => {
@@ -8,20 +9,18 @@ const Tags = props => {
       <div className="tag-list">
         {
           tags.map(tag => {
-            const handleClick = ev => {
-              ev.preventDefault();
-              props.onClickTag(tag);
-            };
 
             return (
-              <a
-                href=""
+              <Link
+                to={{
+                  pathname: "/",
+                  search: "?tab=tag&tag=" + tag
+                }}
                 className="tag-default tag-pill"
                 key={tag}
-                onClick={handleClick}
               >
                 {tag}
-              </a>
+              </Link>
             );
           })
         }

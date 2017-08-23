@@ -3,7 +3,7 @@ import MainView from './MainView';
 import React from 'react';
 import Tags from './Tags';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 @inject('commonStore')
 @withRouter
@@ -12,13 +12,6 @@ export default class Home extends React.Component {
   componentWillMount() {
     this.props.commonStore.loadTags();
   }
-
-  handleTagClick = tag => {
-    const { location } = this.props;
-    if (location.query.tab !== 'tag' || location.query.tag !== tag) {
-      this.props.router.push({ location, query: { tab: 'tag', tag } });
-    }
-  };
 
   render() {
     const { tags, token, appName } = this.props.commonStore;
@@ -38,7 +31,6 @@ export default class Home extends React.Component {
 
                 <Tags
                   tags={tags}
-                  onClickTag={this.handleTagClick}
                 />
 
               </div>

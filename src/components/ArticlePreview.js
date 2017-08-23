@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 const FAVORITED_CLASS = 'btn btn-sm btn-primary';
@@ -28,7 +28,7 @@ export default class ArticlePreview extends React.Component {
       <div className="article-preview">
         <div className="article-meta">
           <Link to={`@${article.author.username}`}>
-            <img src={article.author.image} role="presentation" />
+            <img src={article.author.image} alt="" />
           </Link>
 
           <div className="info">
