@@ -97,7 +97,11 @@ export default class Profile extends React.Component {
         <li className="nav-item">
           <NavLink
             className="nav-link"
-            activeClassName="active"
+            isActive={
+              (match, location) => {
+                return location.pathname.match("/favorites") ? 0 : 1;
+              }
+            }
             to={`/@${profile.username}`}
           >
             My Articles
@@ -107,7 +111,6 @@ export default class Profile extends React.Component {
         <li className="nav-item">
           <NavLink
             className="nav-link"
-            activeClassName="active"
             to={`/@${profile.username}/favorites`}
           >
             Favorited Articles

@@ -1,7 +1,7 @@
 import ArticleList from '../ArticleList';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter, NavLink } from 'react-router-dom'
 import { parse as qsParse } from 'query-string';
 
 const YourFeedTab = props => {
@@ -9,15 +9,20 @@ const YourFeedTab = props => {
 
     return (
       <li className="nav-item">
-      <Link
-            //className={ props.tab === 'feed' ? 'nav-link active' : 'nav-link' }
-            to={{
-              pathname: "/",
-              search: "?tab=feed"
-            }}
+      <NavLink
+          className="nav-link"
+          isActive={
+            (match, location) => {
+              return location.search.match("tab=feed") ? 1 : 0;
+            }
+          }
+          to={{
+            pathname: "/",
+            search: "?tab=feed"
+          }}
         >
           Your Feed
-        </Link>
+        </NavLink>
       </li>
     );
   }
@@ -27,15 +32,20 @@ const YourFeedTab = props => {
 const GlobalFeedTab = props => {
   return (
     <li className="nav-item">
-      <Link
-        //className={ props.tab === 'all' ? 'nav-link active' : 'nav-link' }
+      <NavLink
+        className="nav-link"
+        isActive={
+          (match, location) => {
+            return !location.search.match(/tab=(feed|tag)/) ? 1 : 0;
+          }
+        }
         to={{
           pathname: "/",
           search: "?tab=all"
         }}
       >
         Global Feed
-      </Link>
+      </NavLink>
     </li>
   );
 };

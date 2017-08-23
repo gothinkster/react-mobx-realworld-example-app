@@ -61,7 +61,7 @@ export default class Editor extends React.Component {
     editorStore.submit()
       .then(article => {
         editorStore.reset();
-        this.props.router.replace(`/article/${article.slug}`)
+        this.props.history.replace(`/article/${article.slug}`)
       });
   };
 

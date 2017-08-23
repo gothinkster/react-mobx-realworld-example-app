@@ -20,7 +20,7 @@ export default class Article extends React.Component {
 
   handleDeleteArticle = slug => {
     this.props.articlesStore.deleteArticle(slug)
-      .then(() => this.props.router.replace('/'));
+      .then(() => this.props.history.replace('/'));
   };
 
   handleDeleteComment = id => {
