@@ -1,5 +1,6 @@
 import ListErrors from './ListErrors';
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 @inject('userStore')
@@ -122,6 +123,8 @@ class Settings extends React.Component {
   handleClickLogout = () => this.props.authStore.logout();
 
   render() {
+    const { values, errors, inProgress, goHome } = this.props.authStore;
+
     return (
       <div className="settings-page">
         <div className="container page">
@@ -137,6 +140,8 @@ class Settings extends React.Component {
                 onSubmitForm={user => this.props.userStore.updateUser(user)} />
 
               <hr />
+
+              { goHome && <Redirect to="/" /> }
 
               <button
                 className="btn btn-outline-danger"

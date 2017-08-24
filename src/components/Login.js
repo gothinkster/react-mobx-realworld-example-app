@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import ListErrors from './ListErrors';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
@@ -19,7 +19,7 @@ export default class Login extends React.Component {
   };
 
   render() {
-    const { values, errors, inProgress } = this.props.authStore;
+    const { values, errors, inProgress, goHome } = this.props.authStore;
 
     return (
       <div className="auth-page">
@@ -35,6 +35,8 @@ export default class Login extends React.Component {
               </p>
 
               <ListErrors errors={errors} />
+
+              { goHome && <Redirect to="/" /> }
 
               <form onSubmit={this.handleSubmitForm}>
                 <fieldset>

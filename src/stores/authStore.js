@@ -1,5 +1,4 @@
 import { observable, action } from 'mobx';
-//import { Redirect } from 'react-router-dom';
 import agent from '../agent';
 import userStore from './userStore';
 import commonStore from './commonStore';
@@ -13,6 +12,7 @@ class AuthStore {
     email: '',
     password: '',
   };
+  @observable goHome = false;
 
   @action setUsername(username) {
     this.values.username = username;
@@ -38,12 +38,12 @@ class AuthStore {
     return agent.Auth.login(this.values.email, this.values.password)
       .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      //.then(() => hashHistory.replace('/'))
+      .then(action(() => { this.goHome = true; }))
       .catch(action((err) => {
         this.errors = err.response && err.response.body && err.response.body.errors;
         throw err;
       }))
-      .finally(action(() => { this.inProgress = false; }));
+      .finally(action(() => { this.inProgress = false; this.goHome = false; }));
   }
 
   @action register() {
@@ -52,18 +52,20 @@ class AuthStore {
     return agent.Auth.register(this.values.username, this.values.email, this.values.password)
       .then(({ user }) => commonStore.setToken(user.token))
       .then(() => userStore.pullUser())
-      //.then(() => hashHistory.replace('/'))
+      .then(action(() => { this.goHome = true; }))
       .catch(action((err) => {
         this.errors = err.response && err.response.body && err.response.body.errors;
         throw err;
       }))
-      .finally(action(() => { this.inProgress = false; }));
+      .finally(action(() => { this.inProgress = false; this.goHome = false; }));
   }
 
   @action logout() {
     commonStore.setToken(undefined);
     userStore.forgetUser();
-    //hashHistory.replace('/');
+    return new Promise(res => res())
+      .then(action(() => { this.goHome = true; }))
+      .then(action(() => { this.goHome = false; } ));
   }
 }
 
