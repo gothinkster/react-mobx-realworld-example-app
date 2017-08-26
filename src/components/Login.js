@@ -1,9 +1,11 @@
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ListErrors from './ListErrors';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 
 @inject('authStore')
+@withRouter
 @observer
 export default class Login extends React.Component {
 
@@ -15,11 +17,12 @@ export default class Login extends React.Component {
   handlePasswordChange = e => this.props.authStore.setPassword(e.target.value);
   handleSubmitForm = (e) => {
     e.preventDefault();
-    this.props.authStore.login();
+    this.props.authStore.login()
+      .then(() => this.props.history.replace('/'));
   };
 
   render() {
-    const { values, errors, inProgress, goHome } = this.props.authStore;
+    const { values, errors, inProgress } = this.props.authStore;
 
     return (
       <div className="auth-page">
@@ -35,8 +38,6 @@ export default class Login extends React.Component {
               </p>
 
               <ListErrors errors={errors} />
-
-              { goHome && <Redirect to="/" /> }
 
               <form onSubmit={this.handleSubmitForm}>
                 <fieldset>
