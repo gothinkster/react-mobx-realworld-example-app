@@ -1,5 +1,6 @@
 import ListErrors from './ListErrors';
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 @inject('userStore')
@@ -116,12 +117,16 @@ class SettingsForm extends React.Component {
 }
 
 @inject('userStore', 'authStore')
+@withRouter
 @observer
 class Settings extends React.Component {
 
-  handleClickLogout = () => this.props.authStore.logout();
+  handleClickLogout = () =>
+    this.props.authStore.logout()
+      .then(() => this.props.history.replace('/'));
 
   render() {
+
     return (
       <div className="settings-page">
         <div className="container page">

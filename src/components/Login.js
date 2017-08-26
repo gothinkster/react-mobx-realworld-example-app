@@ -1,9 +1,11 @@
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import ListErrors from './ListErrors';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { withRouter } from 'react-router-dom';
 
 @inject('authStore')
+@withRouter
 @observer
 export default class Login extends React.Component {
 
@@ -15,7 +17,8 @@ export default class Login extends React.Component {
   handlePasswordChange = e => this.props.authStore.setPassword(e.target.value);
   handleSubmitForm = (e) => {
     e.preventDefault();
-    this.props.authStore.login();
+    this.props.authStore.login()
+      .then(() => this.props.history.replace('/'));
   };
 
   render() {
