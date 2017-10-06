@@ -14,7 +14,7 @@ class EditorStore {
 
   @action setArticleSlug(articleSlug) {
     if (this.articleSlug !== articleSlug) {
-      this.comments = [];
+      this.reset();
       this.articleSlug = articleSlug;
     }
   }
