@@ -18,8 +18,8 @@ export default class Editor extends React.Component {
     this.props.editorStore.loadInitialData();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.match.params.slug !== nextProps.params.slug) {
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.slug !== prevProps.match.params.slug) {
       this.props.editorStore.setArticleSlug(this.props.match.params.slug);
       this.props.editorStore.loadInitialData();
     }
