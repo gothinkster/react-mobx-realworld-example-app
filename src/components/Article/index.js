@@ -11,7 +11,7 @@ import marked from 'marked';
 @withRouter
 @observer
 export default class Article extends React.Component {
-  componentWillMount() {
+  componentDidMount() {
     const slug = this.props.match.params.id;
     this.props.articlesStore.loadArticle(slug, { acceptCached: true });
     this.props.commentsStore.setArticleSlug(slug);
