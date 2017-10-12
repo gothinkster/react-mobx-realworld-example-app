@@ -15,6 +15,9 @@ export default class Editor extends React.Component {
 
   componentWillMount() {
     this.props.editorStore.setArticleSlug(this.props.match.params.slug);
+  }
+
+  componentDidMount() {
     this.props.editorStore.loadInitialData();
   }
 

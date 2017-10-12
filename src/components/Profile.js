@@ -57,8 +57,11 @@ const FollowUserButton = props => {
 @observer
 export default class Profile extends React.Component {
   componentWillMount() {
-    this.props.profileStore.loadProfile(this.props.match.params.username);
     this.props.articlesStore.setPredicate(this.getPredicate());
+  }
+
+  componentDidMount() {
+    this.props.profileStore.loadProfile(this.props.match.params.username);
     this.props.articlesStore.loadArticles();
   }
 

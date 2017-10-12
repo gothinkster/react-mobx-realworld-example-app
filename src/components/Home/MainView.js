@@ -71,6 +71,9 @@ export default class MainView extends React.Component {
 
   componentWillMount() {
     this.props.articlesStore.setPredicate(this.getPredicate());
+  }
+
+  componentDidMount() {
     this.props.articlesStore.loadArticles();
   }
 
