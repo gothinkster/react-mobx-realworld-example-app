@@ -2,6 +2,7 @@ import Header from './Header';
 import React from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
+import PrivateRoute from './PrivateRoute';
 
 import Article from './Article';
 import Editor from './Editor';
@@ -39,7 +40,7 @@ export default class App extends React.Component {
             <Route path="/register" component={Register} />
             <Route path="/editor/:slug?" component={Editor} />
             <Route path="/article/:id" component={Article} />
-            <Route path="/settings" component={Settings} />
+            <PrivateRoute path="/settings" component={Settings} />
             <Route path="/@:username" component={Profile} />
             <Route path="/@:username/favorites" component={Profile} />
             <Route path="/" component={Home} />
