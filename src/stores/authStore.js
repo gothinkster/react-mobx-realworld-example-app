@@ -60,7 +60,7 @@ class AuthStore {
   @action logout() {
     commonStore.setToken(undefined);
     userStore.forgetUser();
-    return new Promise(res => res());
+    return Promise.resolve();
   }
 }
 
