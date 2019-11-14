@@ -1,13 +1,13 @@
-import ArticleMeta from './ArticleMeta';
-import CommentContainer from './CommentContainer';
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router-dom';
-import RedError from '../RedError';
-import marked from 'marked';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
+import marked from "marked";
 
+import RedError from "components/RedError";
+import ArticleMeta from "./ArticleMeta";
+import CommentContainer from "./CommentContainer";
 
-@inject('articlesStore', 'userStore', 'commentsStore')
+@inject("articlesStore", "userStore", "commentsStore")
 @withRouter
 @observer
 export default class Article extends React.Component {
@@ -19,8 +19,9 @@ export default class Article extends React.Component {
   }
 
   handleDeleteArticle = slug => {
-    this.props.articlesStore.deleteArticle(slug)
-      .then(() => this.props.history.replace('/'));
+    this.props.articlesStore
+      .deleteArticle(slug)
+      .then(() => this.props.history.replace("/"));
   };
 
   handleDeleteComment = id => {
@@ -36,13 +37,12 @@ export default class Article extends React.Component {
     if (!article) return <RedError message="Can't load article" />;
 
     const markup = { __html: marked(article.body, { sanitize: true }) };
-    const canModify = currentUser && currentUser.username === article.author.username;
+    const canModify =
+      currentUser && currentUser.username === article.author.username;
     return (
       <div className="article-page">
-
         <div className="banner">
           <div className="container">
-
             <h1>{article.title}</h1>
             <ArticleMeta
               article={article}
@@ -53,27 +53,19 @@ export default class Article extends React.Component {
         </div>
 
         <div className="container page">
-
           <div className="row article-content">
             <div className="col-xs-12">
-
               <div dangerouslySetInnerHTML={markup} />
 
               <ul className="tag-list">
-                {
-                  article.tagList.map(tag => {
-                    return (
-                      <li
-                        className="tag-default tag-pill tag-outline"
-                        key={tag}
-                      >
-                        {tag}
-                      </li>
-                    );
-                  })
-                }
+                {article.tagList.map(tag => {
+                  return (
+                    <li className="tag-default tag-pill tag-outline" key={tag}>
+                      {tag}
+                    </li>
+                  );
+                })}
               </ul>
-
             </div>
           </div>
 

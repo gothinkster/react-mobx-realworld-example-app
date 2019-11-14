@@ -7,10 +7,10 @@ import PrivateRoute from "components/PrivateRoute";
 import Login from "pages/Login";
 import Home from "pages/Home";
 import Register from "pages/Register";
-import Article from "./components/Article";
-import Editor from "./components/Editor";
-import Profile from "./components/Profile";
-import Settings from "./components/Settings";
+import Article from "pages/Article";
+import Editor from "pages/Editor";
+import Profile from "pages/Profile";
+import Settings from "pages/Settings";
 
 @inject("userStore", "commonStore")
 @withRouter

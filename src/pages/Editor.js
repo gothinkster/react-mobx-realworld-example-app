@@ -1,16 +1,15 @@
-import ListErrors from './ListErrors';
-import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router-dom';
+import React from "react";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
+import ListErrors from "components/ListErrors";
 
-@inject('editorStore')
+@inject("editorStore")
 @withRouter
 @observer
 export default class Editor extends React.Component {
-
   state = {
-    tagInput: '',
+    tagInput: ""
   };
 
   componentWillMount() {
@@ -29,7 +28,8 @@ export default class Editor extends React.Component {
   }
 
   changeTitle = e => this.props.editorStore.setTitle(e.target.value);
-  changeDescription = e => this.props.editorStore.setDescription(e.target.value);
+  changeDescription = e =>
+    this.props.editorStore.setDescription(e.target.value);
   changeBody = e => this.props.editorStore.setBody(e.target.value);
   changeTagInput = e => this.setState({ tagInput: e.target.value });
 
@@ -49,7 +49,7 @@ export default class Editor extends React.Component {
   handleAddTag = () => {
     if (this.state.tagInput) {
       this.props.editorStore.addTag(this.state.tagInput.trim());
-      this.setState({ tagInput: '' });
+      this.setState({ tagInput: "" });
     }
   };
 
@@ -61,11 +61,10 @@ export default class Editor extends React.Component {
   submitForm = ev => {
     ev.preventDefault();
     const { editorStore } = this.props;
-    editorStore.submit()
-      .then(article => {
-        editorStore.reset();
-        this.props.history.replace(`/article/${article.slug}`)
-      });
+    editorStore.submit().then(article => {
+      editorStore.reset();
+      this.props.history.replace(`/article/${article.slug}`);
+    });
   };
 
   render() {
@@ -75,7 +74,7 @@ export default class Editor extends React.Component {
       title,
       description,
       body,
-      tagList,
+      tagList
     } = this.props.editorStore;
 
     return (
@@ -83,12 +82,10 @@ export default class Editor extends React.Component {
         <div className="container page">
           <div className="row">
             <div className="col-md-10 offset-md-1 col-xs-12">
-
               <ListErrors errors={errors} />
 
               <form>
                 <fieldset>
-
                   <fieldset className="form-group">
                     <input
                       className="form-control form-control-lg"
@@ -135,19 +132,17 @@ export default class Editor extends React.Component {
                     />
 
                     <div className="tag-list">
-                      {
-                        tagList.map(tag => {
-                          return (
-                            <span className="tag-default tag-pill" key={tag}>
-                              <i
-                                className="ion-close-round"
-                                onClick={() => this.handleRemoveTag(tag)}
-                              />
-                              {tag}
-                            </span>
-                          );
-                        })
-                      }
+                      {tagList.map(tag => {
+                        return (
+                          <span className="tag-default tag-pill" key={tag}>
+                            <i
+                              className="ion-close-round"
+                              onClick={() => this.handleRemoveTag(tag)}
+                            />
+                            {tag}
+                          </span>
+                        );
+                      })}
                     </div>
                   </fieldset>
 
@@ -159,10 +154,8 @@ export default class Editor extends React.Component {
                   >
                     Publish Article
                   </button>
-
                 </fieldset>
               </form>
-
             </div>
           </div>
         </div>

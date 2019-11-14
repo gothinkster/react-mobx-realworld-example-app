@@ -1,9 +1,10 @@
-import ArticleList from "./ArticleList";
 import React from "react";
-import LoadingSpinner from "components/LoadingSpinner";
-import RedError from "./RedError";
 import { NavLink, Link, withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
+
+import RedError from "components/RedError";
+import LoadingSpinner from "components/LoadingSpinner";
+import ArticleList from "components/ArticleList";
 
 const EditProfileSettings = props => {
   if (props.isUser) {
