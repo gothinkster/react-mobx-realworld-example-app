@@ -1,16 +1,16 @@
-import Header from "./Header";
+import Header from "./components/Header";
 import React from "react";
 import { Switch, Route, withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import PrivateRoute from "./PrivateRoute";
+import PrivateRoute from "components/PrivateRoute";
 
 import Login from "pages/Login";
 import Home from "pages/Home";
-import Article from "./Article";
-import Editor from "./Editor";
-import Profile from "./Profile";
-import Register from "./Register";
-import Settings from "./Settings";
+import Register from "pages/Register";
+import Article from "./components/Article";
+import Editor from "./components/Editor";
+import Profile from "./components/Profile";
+import Settings from "./components/Settings";
 
 @inject("userStore", "commonStore")
 @withRouter
@@ -36,7 +36,6 @@ export default class App extends React.Component {
         <div>
           <Header />
           <Switch>
-            <Route path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/editor/:slug?" component={Editor} />
@@ -44,6 +43,7 @@ export default class App extends React.Component {
             <PrivateRoute path="/settings" component={Settings} />
             <Route path="/@:username" component={Profile} />
             <Route path="/@:username/favorites" component={Profile} />
+            <Route path="/" component={Home} />
           </Switch>
         </div>
       );
