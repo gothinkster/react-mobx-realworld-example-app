@@ -11,8 +11,8 @@
   "dependencies": {
     "history": "4.7.2",
     "marked": "^0.3.6",
-    "mobx": "^3.2.2",
-    "mobx-react": "^4.2.2",
+    "mobx": "^5.15.0",
+    "mobx-react": "^6.1.4",
     "promise.prototype.finally": "^3.0.0",
     "prop-types": "^15.5.10",
     "query-string": "5.0.0",
