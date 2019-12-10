@@ -2,7 +2,7 @@ import ReactDOM from "react-dom";
 import promiseFinally from "promise.prototype.finally";
 import React from "react";
 import { HashRouter } from "react-router-dom";
-import { useStrict } from "mobx";
+import { configure } from "mobx";
 import { Provider } from "mobx-react";
 
 import App from "./App";
@@ -29,7 +29,7 @@ const stores = {
 window._____APP_STATE_____ = stores;
 
 promiseFinally.shim();
-useStrict(true);
+configure({enforceActions: 'observed'});
 
 ReactDOM.render(
   <Provider {...stores}>
