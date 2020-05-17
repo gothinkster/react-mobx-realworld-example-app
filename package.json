@@ -6,11 +6,11 @@
   "license": "MIT",
   "devDependencies": {
     "custom-react-scripts": "0.2.0",
-    "gh-pages": "^1.0.0"
+    "gh-pages": "^2.2.0"
   },
   "dependencies": {
     "history": "4.7.2",
-    "marked": "^0.3.6",
+    "marked": "^1.1.0",
     "mobx": "^3.2.2",
     "mobx-react": "^4.2.2",
     "promise.prototype.finally": "^3.0.0",
@@ -19,7 +19,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-router-dom": "4.2.2",
-    "superagent": "^3.6.0",
+    "superagent": "^3.8.3",
     "superagent-promise": "^1.1.0"
   },
   "scripts": {
