@@ -6,11 +6,15 @@
   "license": "MIT",
   "devDependencies": {
     "custom-react-scripts": "0.2.0",
-    "gh-pages": "^1.0.0"
+    "gh-pages": "^2.2.0"
   },
   "dependencies": {
     "history": "4.7.2",
+<<<<<<< HEAD
     "marked": "^0.3.19",
+=======
+    "marked": "^1.1.0",
+>>>>>>> 30cffed4db7dd0771bce17c53fe9ff7e7bdcda07
     "mobx": "^3.2.2",
     "mobx-react": "^4.2.2",
     "promise.prototype.finally": "^3.0.0",
