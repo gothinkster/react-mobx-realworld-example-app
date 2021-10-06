@@ -5,7 +5,7 @@ import authStore from './stores/authStore';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
-const API_ROOT = 'https://conduit.productionready.io/api';
+const API_ROOT = '/api';
 
 const encode = encodeURIComponent;
 
