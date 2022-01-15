@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "history": "4.7.2",
-    "marked": "^0.3.6",
+    "marked": "^4.0.10",
     "mobx": "^3.2.2",
     "mobx-react": "^4.2.2",
     "promise.prototype.finally": "^3.0.0",
